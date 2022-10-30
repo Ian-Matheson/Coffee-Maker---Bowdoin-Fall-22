@@ -60,11 +60,17 @@ public class TestDatabaseInteraction {
 	    
 	    dbRecipe.setPrice(15);
 	    dbRecipe.setSugar(12);
+	    dbRecipe.setCoffee(4);
+	    dbRecipe.setChocolate(2);
 	    recipeService.save(dbRecipe);
 
         assertEquals( 1, recipeService.count() );
 
         assertEquals( 15, (int) ( (Recipe) recipeService.findAll().get( 0 ) ).getPrice() );
+        assertEquals(12, dbRecipe.getSugar());
+        assertEquals(4, dbRecipe.getCoffee());
+        assertEquals(2, dbRecipe.getChocolate());
+        
 	       
 	}
 	
