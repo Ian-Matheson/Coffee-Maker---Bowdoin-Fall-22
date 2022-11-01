@@ -1,5 +1,6 @@
 package edu.ncsu.csc.CoffeeMaker.unit;
 
+
 import java.util.List;
 
 import javax.validation.ConstraintViolationException;
@@ -12,7 +13,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.ResultHandler;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.WebApplicationContext;
+
+import org.springframework.http.MediaType;
+import edu.ncsu.csc.CoffeeMaker.common.TestUtils;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import edu.ncsu.csc.CoffeeMaker.TestConfig;
 import edu.ncsu.csc.CoffeeMaker.models.Recipe;
@@ -22,13 +37,22 @@ import edu.ncsu.csc.CoffeeMaker.services.RecipeService;
 @EnableAutoConfiguration
 @SpringBootTest ( classes = TestConfig.class )
 public class RecipeTest {
+	private MockMvc               mvc;
 
+	@Autowired
+	private WebApplicationContext context;
+	
+	@Autowired
+ 	private RecipeService recipeService;
+	
+	
     @Autowired
     private RecipeService service;
 
     @BeforeEach
     public void setup () {
         service.deleteAll();
+        mvc = MockMvcBuilders.webAppContextSetup( context ).build();
     }
 
     @Test
@@ -270,6 +294,34 @@ public class RecipeTest {
 
         Assertions.assertEquals( 0, service.count(), "`service.deleteAll()` should remove everything" );
 
+    }
+    
+    @Test 
+    @Transactional
+    public void testDeleteRecipe3() {
+    	
+    	String recipe = mvc.perform( get( "/api/v1/recipes" ) ).andDo( print() ).andExpect( status().isOk() )
+			    .andReturn().getResponse().getContentAsString();
+		Recipe r = new Recipe();
+		//Creating an Object for Testing
+		if (!recipe.contains("Mocha")) {
+	 	    r.setName("Mocha");
+	 	    r.setPrice(9);
+	 	    r.setMilk(1);
+	 	    r.setSugar(1);
+	 	    r.setCoffee(2);
+	 	    r.setChocolate(1);
+	 	    
+	 	    
+	 	   mvc.perform( post( "/api/v1/recipes" ).contentType( MediaType.APPLICATION_JSON )
+	 	            .content( TestUtils.asJsonString( r ) ) ).andExpect( status().isOk() );
+	 	   //ensure Mocha recipe was added
+			Assertions.assertTrue(recipe.contains((CharSequence) r)); 
+		}
+	 	mvc.perform( ( delete( "/api/v1/recipes/Mocha")).contentType( MediaType.APPLICATION_JSON ).content( TestUtils.asJsonString( r ) ).andExpect(status().isOk() )
+	 		    .andReturn().getResponse().getContentAsString());
+	 	//ensure Mocha recipe was deleted
+	 	Assertions.assertTrue(!recipe.contains((CharSequence) r)); 
     }
 
     @Test
