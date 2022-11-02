@@ -167,7 +167,90 @@ public class InventoryTest {
                     "Trying to update the Inventory with an invalid value for chocolate should result in no changes -- chocolate" );
 
         }
+    }
+    
+    @Test
+    @Transactional
+    public void testCoffeeCheck() {
+        final Inventory ivt = inventoryService.getInventory();
+        
+        final String coffee1 = "5";
+        Assertions.assertEquals(5, ivt.checkCoffee(coffee1));
+        
+        final String coffee2 = "0";
+        Assertions.assertEquals(0, ivt.checkCoffee(coffee2));
 
+        try {
+        	final String coffeeInvalid1 = "-1";
+            ivt.checkCoffee(coffeeInvalid1);
+            Assertions.fail("checkCoffee should not accept an integer less than 0");
+        }
+        catch ( final IllegalArgumentException iae ) {
+        }
+        
+        try {
+        	final String coffeeInvalid2 = "hello";
+            ivt.checkCoffee(coffeeInvalid2);
+            Assertions.fail("checkCoffee should not accept a type that isn't an integer");
+        }
+        catch ( final IllegalArgumentException iae ) {
+        }
+    }
+    
+    @Test
+    @Transactional
+    public void testChocolateCheck() {
+        final Inventory ivt = inventoryService.getInventory();
+        
+        final String choc1 = "5";
+        Assertions.assertEquals(5, ivt.checkChocolate(choc1));
+        
+        final String choc2 = "0";
+        Assertions.assertEquals(0, ivt.checkChocolate(choc2));
+
+        try {
+        	final String chocInvalid1 = "-1";
+            ivt.checkChocolate(chocInvalid1);
+            Assertions.fail("checkChocolate should not accept an integer less than 0");
+        }
+        catch ( final IllegalArgumentException iae ) {
+        }
+        
+        try {
+        	final String chocInvalid2 = "hello";
+            ivt.checkChocolate(chocInvalid2);
+            Assertions.fail("checkChocolate should not accept a type that isn't an integer");
+        }
+        catch ( final IllegalArgumentException iae ) {
+        }
+    }
+    
+    @Test
+    @Transactional
+    public void testMilkCheck() {
+        final Inventory ivt = inventoryService.getInventory();
+        
+        final String milk1 = "5";
+        Assertions.assertEquals(5, ivt.checkMilk(milk1));
+        
+        final String milk2 = "0";
+        Assertions.assertEquals(0, ivt.checkMilk(milk2));
+
+        try {
+        	final String milkInvalid1 = "-1";
+            ivt.checkMilk(milkInvalid1);
+            Assertions.fail("checkMilk should not accept an integer less than 0");
+        }
+        catch ( final IllegalArgumentException iae ) {
+        }
+        
+        try {
+        	final String milkInvalid2 = "hello";
+            ivt.checkMilk(milkInvalid2);
+            Assertions.fail("checkMilk should not accept a type that isn't an integer");
+        }
+        catch ( final IllegalArgumentException iae ) {
+        }
     }
 
 }
