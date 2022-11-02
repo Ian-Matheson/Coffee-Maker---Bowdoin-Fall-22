@@ -252,5 +252,76 @@ public class InventoryTest {
         catch ( final IllegalArgumentException iae ) {
         }
     }
+    
+    @Test
+    @Transactional
+    public void testSugarCheck() {
+        final Inventory ivt = inventoryService.getInventory();
+        
+        final String sugar1 = "5";
+        Assertions.assertEquals(5, ivt.checkSugar(sugar1));
+        
+        final String sugar2 = "0";
+        Assertions.assertEquals(0, ivt.checkSugar(sugar2));
+
+        try {
+        	final String sugarInvalid1 = "-1";
+            ivt.checkSugar(sugarInvalid1);
+            Assertions.fail("checkSugar should not accept an integer less than 0");
+        }
+        catch ( final IllegalArgumentException iae ) {
+        }
+        
+        try {
+        	final String sugarInvalid2 = "hello";
+            ivt.checkSugar(sugarInvalid2);
+            Assertions.fail("checkSugar should not accept a type that isn't an integer");
+        }
+        catch ( final IllegalArgumentException iae ) {
+        }
+    }
+    
+    @Test
+    @Transactional
+    public void testSetId () {
+        final Inventory ivt = inventoryService.getInventory();
+        Long idNum = Long.valueOf(5000);
+        ivt.setId(idNum);
+        Assertions.assertEquals(idNum, ivt.getId());
+    }
+    
+    @Test
+    @Transactional
+    public void testToString() {
+        final Inventory ivt = inventoryService.getInventory();
+        
+        final Recipe recipe = new Recipe();
+        recipe.setName( "Delicious Not-Coffee" );
+        recipe.setChocolate( 10 );
+        recipe.setMilk( 20 );
+        recipe.setSugar( 5 );
+        recipe.setCoffee( 1 );
+
+        recipe.setPrice( 5 );
+
+        ivt.useIngredients( recipe );
+        
+        final StringBuffer buf = new StringBuffer();
+        buf.append( "Coffee: " );
+        buf.append( 500 - recipe.getCoffee() );
+        buf.append( "\n" );
+        buf.append( "Milk: " );
+        buf.append( 500 - recipe.getMilk() );
+        buf.append( "\n" );
+        buf.append( "Sugar: " );
+        buf.append( 500 - recipe.getSugar() );
+        buf.append( "\n" );
+        buf.append( "Chocolate: " );
+        buf.append( 500 - recipe.getChocolate() );
+        buf.append( "\n" );
+        
+        Assertions.assertEquals(buf.toString(), ivt.toString());
+
+    }
 
 }
