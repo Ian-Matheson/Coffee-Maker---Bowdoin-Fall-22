@@ -1,5 +1,6 @@
 package edu.ncsu.csc.CoffeeMaker.unit;
 
+
 import java.util.List;
 
 import javax.validation.ConstraintViolationException;
@@ -13,6 +14,7 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
@@ -25,7 +27,15 @@ import edu.ncsu.csc.CoffeeMaker.services.RecipeService;
 @EnableAutoConfiguration
 @SpringBootTest ( classes = TestConfig.class )
 public class RecipeTest {
+	private MockMvc               mvc;
 
+	@Autowired
+	private WebApplicationContext context;
+	
+	@Autowired
+ 	private RecipeService recipeService;
+	
+	
     @Autowired
     private RecipeService service;
 
@@ -33,6 +43,7 @@ public class RecipeTest {
     @BeforeEach
     public void setup () {
         service.deleteAll();
+        mvc = MockMvcBuilders.webAppContextSetup( context ).build();
     }
 
     @Test
@@ -275,7 +286,6 @@ public class RecipeTest {
         Assertions.assertEquals( 0, service.count(), "`service.deleteAll()` should remove everything" );
 
     }
-    
     
     @Test
     @Transactional
