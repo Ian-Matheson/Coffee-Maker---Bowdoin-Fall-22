@@ -323,5 +323,35 @@ public class RecipeTest {
 
         return recipe;
     }
+    
+    @Test
+    public void testToString() { 
+    	Recipe r = new Recipe(); 
+    	r.setName("Sophia"); 
+    	Assertions.assertEquals("Sophia", r.toString());
+    	Assertions.assertFalse("Ian".equals(r.toString())); 
+    }
+
+    @Test 
+    public void testEquals() {
+    	Recipe r = new Recipe(); 
+    	
+    	Assertions.assertFalse(r.equals(null)); 
+    	Assertions.assertTrue(r.equals(r)); 
+    	
+    	String string = "aslkdfhalkfj"; 
+    	Assertions.assertFalse(r.equals(string)); 
+    	
+    	r.setName(null);
+    	Recipe anotherRecipe = new Recipe(); 
+    	Assertions.assertFalse(r.equals(anotherRecipe)); 
+    	
+    	r.setName("Sophia");
+    	anotherRecipe.setName("Ian");
+    	Assertions.assertFalse(r.equals(anotherRecipe)); 
+    	
+    	anotherRecipe.setName("Sophia");
+    	Assertions.assertTrue(r.equals(anotherRecipe)); 
+    }
 
 }
