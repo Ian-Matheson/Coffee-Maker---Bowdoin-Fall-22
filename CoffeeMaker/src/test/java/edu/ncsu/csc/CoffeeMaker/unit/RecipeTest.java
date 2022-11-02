@@ -12,7 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.WebApplicationContext;
 
 import edu.ncsu.csc.CoffeeMaker.TestConfig;
 import edu.ncsu.csc.CoffeeMaker.models.Recipe;
@@ -25,6 +28,7 @@ public class RecipeTest {
 
     @Autowired
     private RecipeService service;
+
 
     @BeforeEach
     public void setup () {
@@ -271,7 +275,8 @@ public class RecipeTest {
         Assertions.assertEquals( 0, service.count(), "`service.deleteAll()` should remove everything" );
 
     }
-
+    
+    
     @Test
     @Transactional
     public void testEditRecipe1 () {
