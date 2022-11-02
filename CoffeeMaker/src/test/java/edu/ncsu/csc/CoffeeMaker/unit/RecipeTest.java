@@ -15,7 +15,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.web.servlet.MockMvc;
+
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.WebApplicationContext;
 
 import edu.ncsu.csc.CoffeeMaker.TestConfig;
 import edu.ncsu.csc.CoffeeMaker.models.Recipe;
@@ -25,13 +29,23 @@ import edu.ncsu.csc.CoffeeMaker.services.RecipeService;
 @EnableAutoConfiguration
 @SpringBootTest ( classes = TestConfig.class )
 public class RecipeTest {
+	private MockMvc               mvc;
 
+	@Autowired
+	private WebApplicationContext context;
+	
+	@Autowired
+ 	private RecipeService recipeService;
+	
+	
     @Autowired
     private RecipeService service;
+
 
     @BeforeEach
     public void setup () {
         service.deleteAll();
+        mvc = MockMvcBuilders.webAppContextSetup( context ).build();
     }
 
     @Test
@@ -274,7 +288,7 @@ public class RecipeTest {
         Assertions.assertEquals( 0, service.count(), "`service.deleteAll()` should remove everything" );
 
     }
-
+    
     @Test
     @Transactional
     public void testEditRecipe1 () {
@@ -355,6 +369,36 @@ public class RecipeTest {
         recipe.setChocolate( chocolate );
 
         return recipe;
+    }
+    
+    @Test
+    public void testToString() { 
+    	Recipe r = new Recipe(); 
+    	r.setName("Sophia"); 
+    	Assertions.assertEquals("Sophia", r.toString());
+    	Assertions.assertFalse("Ian".equals(r.toString())); 
+    }
+
+    @Test 
+    public void testEquals() {
+    	Recipe r = new Recipe(); 
+    	
+    	Assertions.assertFalse(r.equals(null)); 
+    	Assertions.assertTrue(r.equals(r)); 
+    	
+    	String string = "aslkdfhalkfj"; 
+    	Assertions.assertFalse(r.equals(string)); 
+    	
+    	r.setName(null);
+    	Recipe anotherRecipe = new Recipe(); 
+    	Assertions.assertFalse(r.equals(anotherRecipe)); 
+    	
+    	r.setName("Sophia");
+    	anotherRecipe.setName("Ian");
+    	Assertions.assertFalse(r.equals(anotherRecipe)); 
+    	
+    	anotherRecipe.setName("Sophia");
+    	Assertions.assertTrue(r.equals(anotherRecipe)); 
     }
 
 }
