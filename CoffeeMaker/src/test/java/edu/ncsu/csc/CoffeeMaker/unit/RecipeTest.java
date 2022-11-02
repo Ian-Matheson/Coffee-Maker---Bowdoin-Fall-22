@@ -1,5 +1,7 @@
 package edu.ncsu.csc.CoffeeMaker.unit;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
 
@@ -14,20 +16,10 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.ResultHandler;
+
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
-
-import org.springframework.http.MediaType;
-import edu.ncsu.csc.CoffeeMaker.common.TestUtils;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import edu.ncsu.csc.CoffeeMaker.TestConfig;
 import edu.ncsu.csc.CoffeeMaker.models.Recipe;
@@ -48,6 +40,7 @@ public class RecipeTest {
 	
     @Autowired
     private RecipeService service;
+
 
     @BeforeEach
     public void setup () {
@@ -296,34 +289,6 @@ public class RecipeTest {
 
     }
     
-    @Test 
-    @Transactional
-    public void testDeleteRecipe3() {
-    	
-    	String recipe = mvc.perform( get( "/api/v1/recipes" ) ).andDo( print() ).andExpect( status().isOk() )
-			    .andReturn().getResponse().getContentAsString();
-		Recipe r = new Recipe();
-		//Creating an Object for Testing
-		if (!recipe.contains("Mocha")) {
-	 	    r.setName("Mocha");
-	 	    r.setPrice(9);
-	 	    r.setMilk(1);
-	 	    r.setSugar(1);
-	 	    r.setCoffee(2);
-	 	    r.setChocolate(1);
-	 	    
-	 	    
-	 	   mvc.perform( post( "/api/v1/recipes" ).contentType( MediaType.APPLICATION_JSON )
-	 	            .content( TestUtils.asJsonString( r ) ) ).andExpect( status().isOk() );
-	 	   //ensure Mocha recipe was added
-			Assertions.assertTrue(recipe.contains((CharSequence) r)); 
-		}
-	 	mvc.perform( ( delete( "/api/v1/recipes/Mocha")).contentType( MediaType.APPLICATION_JSON ).content( TestUtils.asJsonString( r ) ).andExpect(status().isOk() )
-	 		    .andReturn().getResponse().getContentAsString());
-	 	//ensure Mocha recipe was deleted
-	 	Assertions.assertTrue(!recipe.contains((CharSequence) r)); 
-    }
-
     @Test
     @Transactional
     public void testEditRecipe1 () {
@@ -347,7 +312,52 @@ public class RecipeTest {
         Assertions.assertEquals( 1, service.count(), "Editing a recipe shouldn't duplicate it" );
 
     }
-
+    
+    @Test
+    @Transactional
+    public void testCheckRecipe() {
+    	Recipe recipe = createRecipe("coffee", 10, 0, 0, 0, 0);
+    	assertEquals(true, recipe.checkRecipe());
+    	
+    	Recipe recipe1 = createRecipe("coffee", 10, 1, 0, 0, 0);
+    	assertEquals(false, recipe1.checkRecipe());
+    	
+    	Recipe recipe2 = createRecipe("coffee", 10, 0, 1, 0, 0);
+    	assertEquals(false, recipe2.checkRecipe());
+    	
+    	Recipe recipe3 = createRecipe("coffee", 10, 0, 0, 1, 0);
+    	assertEquals(false, recipe3.checkRecipe());
+    	
+    	Recipe recipe4 = createRecipe("coffee", 10, 1, 0, 0, 1);
+    	assertEquals(false, recipe4.checkRecipe());
+    }
+    
+    @Test
+    @Transactional
+    public void testSetID() {
+    	Recipe r = new Recipe(); 
+    	r.setName("William");
+    	
+    	assertEquals("William", r.getName());
+    	assertFalse(r.getName() == "will");
+    }
+    
+    @Test
+    @Transactional
+    public void testUpdateRecipe() {
+    	Recipe coffee = createRecipe("coffee", 10, 7, 7, 7, 7);
+    	Recipe water = createRecipe("water", 1, 0, 0, 0, 0);
+    	
+    	coffee.updateRecipe(water);
+    	
+    	assertEquals(0, coffee.getChocolate());
+    	assertEquals(0, coffee.getCoffee());
+    	assertEquals(0, coffee.getMilk());
+    	assertEquals(0, coffee.getSugar());
+    	assertEquals(1, coffee.getPrice());
+    }
+    
+    
     private Recipe createRecipe ( final String name, final Integer price, final Integer coffee, final Integer milk,
             final Integer sugar, final Integer chocolate ) {
         final Recipe recipe = new Recipe();
@@ -359,6 +369,36 @@ public class RecipeTest {
         recipe.setChocolate( chocolate );
 
         return recipe;
+    }
+    
+    @Test
+    public void testToString() { 
+    	Recipe r = new Recipe(); 
+    	r.setName("Sophia"); 
+    	Assertions.assertEquals("Sophia", r.toString());
+    	Assertions.assertFalse("Ian".equals(r.toString())); 
+    }
+
+    @Test 
+    public void testEquals() {
+    	Recipe r = new Recipe(); 
+    	
+    	Assertions.assertFalse(r.equals(null)); 
+    	Assertions.assertTrue(r.equals(r)); 
+    	
+    	String string = "aslkdfhalkfj"; 
+    	Assertions.assertFalse(r.equals(string)); 
+    	
+    	r.setName(null);
+    	Recipe anotherRecipe = new Recipe(); 
+    	Assertions.assertFalse(r.equals(anotherRecipe)); 
+    	
+    	r.setName("Sophia");
+    	anotherRecipe.setName("Ian");
+    	Assertions.assertFalse(r.equals(anotherRecipe)); 
+    	
+    	anotherRecipe.setName("Sophia");
+    	Assertions.assertTrue(r.equals(anotherRecipe)); 
     }
 
 }

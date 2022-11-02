@@ -1,6 +1,10 @@
 package edu.ncsu.csc.CoffeeMaker.api;
 
+import static org.junit.Assert.assertTrue;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import javax.transaction.Transactional;
@@ -129,6 +133,37 @@ public class APIRecipeTest {
         recipe.setChocolate( chocolate );
 
         return recipe;
+    }
+
+    @Test 
+    @Transactional
+    public void testDeleteRecipe() throws Exception{
+
+    	String recipe = mvc.perform( get( "/api/v1/recipes" ) ).andDo( print() ).andExpect( status().isOk() )
+			    .andReturn().getResponse().getContentAsString();
+		//Creating an Object for Testing
+		if (!recipe.contains("Mocha")) {
+	    	Recipe r = new Recipe(); 
+	 	    r.setName("Mocha");
+	 	    r.setPrice(9);
+	 	    r.setMilk(1);
+	 	    r.setSugar(1);
+	 	    r.setCoffee(2);
+	 	    r.setChocolate(1);
+
+
+			mvc.perform( post( "/api/v1/recipes" ).contentType( MediaType.APPLICATION_JSON )
+				 	            .content( TestUtils.asJsonString( r ) ) ).andExpect( status().isOk() );
+			recipe = mvc.perform( get( "/api/v1/recipes" ) ).andDo( print() ).andExpect( status().isOk() )
+						.andReturn().getResponse().getContentAsString();
+			//ensure Mocha recipe was added
+			Assertions.assertTrue(recipe.contains("Mocha"));
+		}
+	 	String newRecipes = mvc.perform( delete( "/api/v1/recipes/Mocha" ) ).andDo( print() ).andExpect( status().isOk() )
+	 		    .andReturn().getResponse().getContentAsString();
+		 
+	 	//ensure Mocha recipe was deleted
+	 	Assertions.assertTrue(newRecipes.contains("Mocha was deleted successfully")); 
     }
 
 }
