@@ -1,5 +1,8 @@
 package edu.ncsu.csc.CoffeeMaker.unit;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.List;
 
 import javax.validation.ConstraintViolationException;
@@ -295,7 +298,52 @@ public class RecipeTest {
         Assertions.assertEquals( 1, service.count(), "Editing a recipe shouldn't duplicate it" );
 
     }
-
+    
+    @Test
+    @Transactional
+    public void testCheckRecipe() {
+    	Recipe recipe = createRecipe("coffee", 10, 0, 0, 0, 0);
+    	assertEquals(true, recipe.checkRecipe());
+    	
+    	Recipe recipe1 = createRecipe("coffee", 10, 1, 0, 0, 0);
+    	assertEquals(false, recipe1.checkRecipe());
+    	
+    	Recipe recipe2 = createRecipe("coffee", 10, 0, 1, 0, 0);
+    	assertEquals(false, recipe2.checkRecipe());
+    	
+    	Recipe recipe3 = createRecipe("coffee", 10, 0, 0, 1, 0);
+    	assertEquals(false, recipe3.checkRecipe());
+    	
+    	Recipe recipe4 = createRecipe("coffee", 10, 1, 0, 0, 1);
+    	assertEquals(false, recipe4.checkRecipe());
+    }
+    
+    @Test
+    @Transactional
+    public void testSetID() {
+    	Recipe r = new Recipe(); 
+    	r.setName("William");
+    	
+    	assertEquals("William", r.getName());
+    	assertFalse(r.getName() == "will");
+    }
+    
+    @Test
+    @Transactional
+    public void testUpdateRecipe() {
+    	Recipe coffee = createRecipe("coffee", 10, 7, 7, 7, 7);
+    	Recipe water = createRecipe("water", 1, 0, 0, 0, 0);
+    	
+    	coffee.updateRecipe(water);
+    	
+    	assertEquals(0, coffee.getChocolate());
+    	assertEquals(0, coffee.getCoffee());
+    	assertEquals(0, coffee.getMilk());
+    	assertEquals(0, coffee.getSugar());
+    	assertEquals(1, coffee.getPrice());
+    }
+    
+    
     private Recipe createRecipe ( final String name, final Integer price, final Integer coffee, final Integer milk,
             final Integer sugar, final Integer chocolate ) {
         final Recipe recipe = new Recipe();
