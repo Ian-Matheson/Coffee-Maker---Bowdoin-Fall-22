@@ -94,5 +94,19 @@ public class MappingController {
     public String makeCoffeeForm ( final Model model ) {
         return "makecoffee";
     }
+    
+    /**
+     * On a GET request to /addIngredient, the MakeCoffeeController will return
+     * /src/main/resources/templates/UC7.html.
+     *
+     * @param model
+     *            underlying UI model
+     * @return contents of the page
+     */
+    @GetMapping ( { "/UC7", "/UC7.html" } )
+    public String addIngredient ( final Model model ) {
+        return "UC7";
+    }
+  
 
 }
