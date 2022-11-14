@@ -39,6 +39,7 @@ public class MappingController {
     public String addRecipePage ( final Model model ) {
         return "recipe";
     }
+    
 
     /**
      * On a GET request to /deleterecipe, the DeleteRecipeController will return
