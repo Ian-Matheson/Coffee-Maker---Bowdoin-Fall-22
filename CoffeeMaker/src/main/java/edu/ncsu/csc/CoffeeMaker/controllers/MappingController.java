@@ -103,9 +103,9 @@ public class MappingController {
      *            underlying UI model
      * @return contents of the page
      */
-    @GetMapping ( { "/UC7", "/UC7.html" } )
+    @GetMapping ( { "/addIngredient", "/addIngredient.html" } )
     public String addIngredient ( final Model model ) {
-        return "UC7";
+        return "addIngredient";
     }
   
 

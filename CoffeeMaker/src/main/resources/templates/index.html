@@ -3,18 +3,61 @@
 <head>
 <title>Welcome to the CSC326 CoffeeMaker</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<style> 
+ .jumbotron {
+      top: 50%;
+      left: 50%;
+      background-position: 0% 10%;
+      background-size: cover;
+      background-repeat: no-repeat;
+      border: 2px;
+      background-color:#EADDCA;
+    }
+    p {
+    	font-family: Geogria;
+    	font-size: 15px;
+    	text-align: center;
+    }
+    .bottom {
+  		position: absolute;
+  		bottom: 0;
+  		left: 0;
+  		text-align: center;
+	}
+	
+	.navigation {
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: auto auto auto auto auto;
+    }
+    
+    
+ </style>
 </head>
-<body>
-	<h1 style = "color:brown; font-size: 100">Cat Bar Jim </h1>
-	<img src="https://live.staticflickr.com/8060/8163931163_5bebe1b332.jpg" alt="cat with coffee">
-	<h2>Available Options</h2>
-	<ul>
-		<li><a href="inventory.html">Update Inventory</a></li>
-		<li><a href="recipe.html">Add a Recipe</a></li>
-		<li><a href="editrecipe.html">Edit Recipe</a></li>
-		<li><a href="deleterecipe.html">Delete Recipe</a></li>
-		<li><a href="makecoffee.html">Make Coffee</a></li>
-		<li><a href="UC7.html">Add Ingredients</a></li>
-	</ul>
+<body style ="background-color:#C4A484">
+	
+	<div class="intro">
+        <div class="jumbotron">
+          <h1 style = "color:brown; font-size: 100; padding-left: 20px">Cat Bar Jim </h1>
+          <div class = "navigation">
+		<a href="inventory.html">Update Inventory</a>
+		<a href="recipe.html">Add a Recipe</a>
+		<a href="editrecipe.html">Edit Recipe</a>
+		<a href="deleterecipe.html">Delete Recipe</a>
+		<a href="makecoffee.html">Make Coffee</a>
+		<a href="addIngredient">Add Ingredients</a>
+	</div>
+	
+        </div>
+      </div>
+    
+	<img src="https://live.staticflickr.com/8060/8163931163_5bebe1b332.jpg" alt="cat with coffee" style="padding-left:20px">
+	
+	<div id="bottom"> 
+		<p style="text-align: center">Ian, John, Sophia, William </p>
+		<p style="text-align: center">Established @2022</p>
+	</div>
+	
+	
 </body>
 </html>
