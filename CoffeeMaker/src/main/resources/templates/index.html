@@ -28,8 +28,28 @@
 	.navigation {
       overflow: hidden;
       display: grid;
-      grid-template-columns: auto auto auto auto auto;
+ 
+      grid-template-columns: auto auto auto auto auto auto auto auto;
+      
+  
     }
+    
+    button {
+    	background-color:#5C4033;
+    	color: white;
+    	font-size:12px;
+    	border-radius:12px;
+    	padding: 10px 5px;
+    }
+    
+   .box {
+    width:1500px;
+    text-align:center;
+	}
+	
+	img {
+	    margin:5px;
+	}
     
     
  </style>
@@ -39,20 +59,27 @@
 	<div class="intro">
         <div class="jumbotron">
           <h1 style = "color:brown; font-size: 100; padding-left: 20px">Cat Bar Jim </h1>
-          <div class = "navigation">
-		<a href="inventory.html">Update Inventory</a>
-		<a href="recipe.html">Add a Recipe</a>
-		<a href="editrecipe.html">Edit Recipe</a>
-		<a href="deleterecipe.html">Delete Recipe</a>
-		<a href="makecoffee.html">Make Coffee</a>
-		<a href="addIngredient">Add Ingredients</a>
-		<a href="addcustomrecipe.html">Add Custom Recipe</a>
-	</div>
+	          <div class = "navigation">
+			<button onclick="window.location.href='inventory.html';">Update Inventory</button>
+			<button onclick="window.location.href='editrecipe.html';">Edit Recipe</button>
+			<button onclick="window.location.href='deleterecipe.html';">Delete Recipe</button>
+			<button onclick="window.location.href='makecoffee.html';">Make Coffee</button>
+			<button onclick="window.location.href='addIngredient.html';">Add Ingredients</button>
+			<button onclick="window.location.href='addcustomrecipe.html';">Add Custom Recipe</button>
+			<button onclick="window.location.href='recipe.html';">Add a Recipe</button>
+			
+		</div>
 	
         </div>
       </div>
+      
+      <br>
+      <br>
     
-	<img src="https://live.staticflickr.com/8060/8163931163_5bebe1b332.jpg" alt="cat with coffee" style="padding-left:20px">
+    <div class="box"> 
+		<img src="https://live.staticflickr.com/8060/8163931163_5bebe1b332.jpg" alt="cat with coffee">
+		<img src="https://comic.browserling.com/java-cafe.png">
+	</div>
 	
 	<div id="bottom"> 
 		<p style="text-align: center">Ian, John, Sophia, William </p>
