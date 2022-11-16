@@ -3,18 +3,10 @@
 <head>
 <title>Add a Recipe</title>
 <style>
-input.ng-valid {
-	background-color: lightgreen;
-}
 
-input.ng-dirty.ng-invalid-required,input.ng-dirty.ng-invalid-number {
-	background-color: red;
+.has-error {
+    color: red;
 }
-
-input.ng-dirty.ng-invalid-min {
-	background-color: yellow;
-}
-
 
 </style>
 <link rel="stylesheet" href="css/bootstrap.css" />
@@ -109,10 +101,10 @@ input.ng-dirty.ng-invalid-min {
                                         placeholder="Enter recipe price" required="0" min="0"/>
                                     <div class="has-error" ng-show="addRecipeForm.$dirty">
                                         <span ng-show="addRecipeForm.price.$error.required">This
-                                            is a required field</span> <span
+                                            is a required field.</span> <span
                                             ng-show="addRecipeForm.price.$error.min">Minimum amount
-                                            is 0</span> <span ng-show="addRecipeForm.price.$invalid">This
-                                            field is invalid </span>
+                                            is 0.</span> <span ng-show="addRecipeForm.price.$invalid">This
+                                            field is invalid.</span>
                                     </div>
                                 </div>
                             </div>
