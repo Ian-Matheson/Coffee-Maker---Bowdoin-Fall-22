@@ -4,8 +4,15 @@
 <title>Add a Recipe</title>
 <style>
 
+
+
 .has-error {
     color: red;
+}
+
+table, th, td {
+  border:1px solid black;
+  background-color: white;
 }
 
 </style>
@@ -161,6 +168,28 @@
 								ng-disabled="addRecipeForm.$pristine">Reset Form</button>
 						</div>
 					</div>
+                    <table style = "width:30%">
+                        <tr>
+                            <th>ID</th>
+                            <th>Ingredients In Inventory</th>
+                            <th>Amount</th>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>Chocolate</td>
+                            <td>300</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>Coffee</td>
+                            <td>420</td>
+                        </tr>
+                        <tr>
+                            <td>1</td>
+                            <td>Milk</td>
+                            <td>500</td>
+                        </tr>
+                    </table>
 				</form>
 			</div>
 			<div ng-show="success">Recipe Created</div>
@@ -169,8 +198,5 @@
 
 		<a href="/index">Home</a>
 	</div>
-
-
-
 </body>
 </html>
