@@ -39,6 +39,7 @@ public class MappingController {
     public String addRecipePage ( final Model model ) {
         return "recipe";
     }
+    
 
     /**
      * On a GET request to /deleterecipe, the DeleteRecipeController will return
@@ -93,5 +94,34 @@ public class MappingController {
     public String makeCoffeeForm ( final Model model ) {
         return "makecoffee";
     }
+    
+    /**
+     * On a GET request to /addIngredient, the MakeCoffeeController will return
+     * /src/main/resources/templates/UC7.html.
+     *
+     * @param model
+     *            underlying UI model
+     * @return contents of the page
+     */
+    @GetMapping ( { "/addIngredient", "/addIngredient.html" } )
+    public String addIngredient ( final Model model ) {
+        return "addIngredient";
+    }
+    
+    /**
+     * On a GET request to /addIngredient, the MakeCoffeeController will return
+     * /src/main/resources/templates/UC7.html.
+     *
+     * @param model
+     *            underlying UI model
+     * @return contents of the page
+     */
+    @GetMapping ( { "/addcustomrecipe", "/addcustomrecipe.html" } )
+    public String addcustomrecipe ( final Model model ) {
+        return "addcustomrecipe";
+    }
+  
+  
 
+    
 }
