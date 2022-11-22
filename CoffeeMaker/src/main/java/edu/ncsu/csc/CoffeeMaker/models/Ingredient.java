@@ -27,7 +27,7 @@ public class Ingredient extends DomainObject {
     
     
 	/** enum of available ingredients */
-   // @Enumerated( EnumType.STRING )
+    @Enumerated( EnumType.STRING )
     private IngredientType ingredient;
     
     
@@ -92,6 +92,6 @@ public class Ingredient extends DomainObject {
 	    
 	@Override
 	public String toString() {
-		return "Ingredient [id=" + id + ", ingredient=" + ingredient + ", amount=" + amount + "]";
+		return "Ingredient [ingredient=" + ingredient + ", amount=" + amount + "]";
 	}
 }

@@ -1,8 +1,14 @@
 package edu.ncsu.csc.CoffeeMaker.models;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.validation.constraints.Min;
 
 /**
@@ -22,6 +28,10 @@ public class Recipe extends DomainObject {
 
     /** Recipe name */
     private String  name;
+    
+    /** ingredients */
+    @OneToMany( cascade = CascadeType.ALL, fetch = FetchType.EAGER )
+    private final List<Ingredient> ingredients;
 
     /** Recipe price */
     @Min ( 0 )
@@ -32,8 +42,29 @@ public class Recipe extends DomainObject {
      */
     public Recipe () {
         this.name = "";
+        ingredients = new ArrayList();
     }
 
+    /**
+     * Adds an ingredient to the recipe
+     *
+     * @return true if the ingredient is successfully added, otherwise return false
+     */
+    public boolean addIngredient (Ingredient ingredient) {
+    	//Maybe need cases for when can't add ingredient?
+    	ingredients.add(ingredient);
+    	return true;
+    }
+    
+    /**
+     * Check if all ingredient fields in the recipe are 0
+     *
+     * @return ingredients in list
+     */
+    public List<Ingredient> getIngredients () {
+    	return ingredients;
+    }
+    
     /**
      * Check if all ingredient fields in the recipe are 0
      *
@@ -103,15 +134,10 @@ public class Recipe extends DomainObject {
         this.price = price;
     }
 
-    /**
-     * Returns the name of the recipe.
-     *
-     * @return String
-     */
     @Override
-    public String toString () {
-        return name;
-    }
+	public String toString() {
+		return "Recipe " + name + " with ingredients " + ingredients + "]";
+	}
 
     @Override
     public int hashCode () {
