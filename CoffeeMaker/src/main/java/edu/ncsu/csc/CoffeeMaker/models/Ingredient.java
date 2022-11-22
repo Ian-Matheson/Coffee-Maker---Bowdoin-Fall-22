@@ -1,11 +1,13 @@
 package edu.ncsu.csc.CoffeeMaker.models;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.validation.constraints.Min;
 
-import edu.ncsu.csc.CoffeeMaker.models.enums.IngredientType.Ingredients;
+import edu.ncsu.csc.CoffeeMaker.models.enums.IngredientType;
 
 /**
  * Inventory for the coffee maker. Inventory is tied to the database using
@@ -23,16 +25,19 @@ public class Ingredient extends DomainObject {
     @GeneratedValue
     private Long    id;
     
+    
 	/** enum of available ingredients */
-    private Ingredients ingredient;
+   // @Enumerated( EnumType.STRING )
+    private IngredientType ingredient;
+    
     
     /** amount of ingredient */
     @Min ( 0 )
     private Integer amount;
     
-	public Ingredient(Ingredients ingredient, @Min(0) Integer amount) {
+	public Ingredient(IngredientType ingredient, @Min(0) Integer amount) {
 		super();
-		this.ingredient = ingredient;
+	    this.ingredient = ingredient;
 		this.amount = amount;
 	}
     
@@ -60,14 +65,14 @@ public class Ingredient extends DomainObject {
 	/**
 	 * @return the ingredient
 	 */
-	public Ingredients getIngredient() {
+	public IngredientType getIngredient() {
 		return ingredient;
 	}
 
 	/**
 	 * @param ingredient the ingredient to set
 	 */
-	public void setIngredient(Ingredients ingredient) {
+	public void setIngredient(IngredientType ingredient) {
 		this.ingredient = ingredient;
 	}
 
