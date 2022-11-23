@@ -46,35 +46,30 @@ public class Recipe extends DomainObject {
     }
 
     /**
-     * Adds an ingredient to the recipe
-     *
-     * @return true if the ingredient is successfully added, otherwise return false
-     */
-    public boolean addIngredient (Ingredient ingredient) {
-    	//Maybe need cases for when can't add ingredient?
-    	ingredients.add(ingredient);
-    	return true;
-    }
-    
-    /**
-     * Check if all ingredient fields in the recipe are 0
-     *
-     * @return ingredients in list
-     */
-    public List<Ingredient> getIngredients () {
-    	return ingredients;
-    }
-    
-    /**
      * Check if all ingredient fields in the recipe are 0
      *
      * @return true if all ingredient fields are 0, otherwise return false
      */
     public boolean checkRecipe () {
-    	//TODO
+    	for (int i=0; i < ingredients.size(); i++) {
+    		if (ingredients.get(0).getAmount() != 0) {
+    			return false;
+    		}
+    	}
         return true;
     }
-
+    
+    /**
+     * Set the ID of the Recipe (Used by Hibernate)
+     *
+     * @param id
+     *            the ID
+     */
+    @SuppressWarnings ( "unused" )
+    private void setId ( final Long id ) {
+        this.id = id;
+    }
+    
     /**
      * Get the ID of the Recipe
      *
@@ -86,26 +81,6 @@ public class Recipe extends DomainObject {
     }
 
     /**
-     * Set the ID of the Recipe (Used by Hibernate)
-     *
-     * @param id
-     *            the ID
-     */
-    @SuppressWarnings ( "unused" )
-    private void setId ( final Long id ) {
-        this.id = id;
-    }
-
-    /**
-     * Returns name of the recipe.
-     *
-     * @return Returns the name.
-     */
-    public String getName () {
-        return name;
-    }
-
-    /**
      * Sets the recipe name.
      *
      * @param name
@@ -114,14 +89,14 @@ public class Recipe extends DomainObject {
     public void setName ( final String name ) {
         this.name = name;
     }
-
+    
     /**
-     * Returns the price of the recipe.
+     * Returns name of the recipe.
      *
-     * @return Returns the price.
+     * @return Returns the name.
      */
-    public Integer getPrice () {
-        return price;
+    public String getName () {
+        return name;
     }
 
     /**
@@ -133,7 +108,87 @@ public class Recipe extends DomainObject {
     public void setPrice ( final Integer price ) {
         this.price = price;
     }
+    
+    /**
+     * Returns the price of the recipe.
+     *
+     * @return Returns the price.
+     */
+    public Integer getPrice () {
+        return price;
+    }
 
+
+    /**
+     * Adds an ingredient to the recipe
+     *
+     * @return true if the ingredient is successfully added, otherwise return false
+     */
+    public boolean addIngredient (Ingredient ingredient, int amount) {
+    	//Maybe need cases for when can't add ingredient? like when ingredient null?
+    	ingredient.setAmount(amount);
+    	ingredients.add(ingredient);
+    	return true;
+    }
+    
+    /**
+     * Edit an ingredient currently in the recipe
+     *
+     * @return true if the ingredient is successfully added, otherwise return false
+     */
+    //Would these two ingredients ever have different amounts?
+    public boolean editIngredient (Ingredient ingredient, int amount) {
+    	for (int i=0; i < ingredients.size(); i++) {
+    		if (ingredients.get(i).equals(ingredient)) {
+    			ingredient.setAmount(amount);
+    			ingredients.set(i, ingredient);
+    			return true;
+    		}
+    	}
+    	return false;
+    }
+    
+    /**
+     * Gets a list of all the ingredients in the recipe
+     *
+     * @return ingredients in list
+     */
+    public List<Ingredient> getIngredients () {
+    	return ingredients;
+    }
+    
+    /**
+     * Removes an ingredient from the recipe
+     *
+     * @return true if the ingredient is successfully added, otherwise return false
+     */
+    //Would these two ingredients ever have different amounts?
+    public boolean removeIngredient (Ingredient ingredient) {
+    	return ingredients.remove(ingredient);
+    }
+   
+
+    /**
+     * Updates the fields to be equal to the passed Recipe
+     *
+     * @param r with updated fields
+     */
+    //DONT RLY GET THE POINT OF THIS
+    public void updateRecipe ( final Recipe r ) {
+    	for (int i=0; i < ingredients.size(); i++) {
+    		String currName = ingredients.get(i).getName();
+    		
+    		for (int j=0; j < r.getIngredients().size(); j++) {
+    			String newName = r.getIngredients().get(j).getName();
+    			if (currName.equals(newName)) {
+    				int newAmount = r.getIngredients().get(j).getAmount();
+    				ingredients.get(i).setAmount(newAmount);
+    			}
+    		}
+    	}
+        setPrice( r.getPrice() );
+    }
+    
     @Override
 	public String toString() {
 		return "Recipe " + name + " with ingredients " + ingredients + "]";

@@ -7,7 +7,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.validation.constraints.Min;
 
-import edu.ncsu.csc.CoffeeMaker.models.enums.IngredientType;
 
 /**
  * Inventory for the coffee maker. Inventory is tied to the database using
@@ -27,17 +26,16 @@ public class Ingredient extends DomainObject {
     
     
 	/** enum of available ingredients */
-    @Enumerated( EnumType.STRING )
-    private IngredientType ingredient;
+    private String name;
     
     
     /** amount of ingredient */
     @Min ( 0 )
     private Integer amount;
     
-	public Ingredient(IngredientType ingredient, @Min(0) Integer amount) {
+	public Ingredient(String name, @Min(0) Integer amount) {
 		super();
-	    this.ingredient = ingredient;
+	    this.name = name;
 		this.amount = amount;
 	}
     
@@ -65,15 +63,15 @@ public class Ingredient extends DomainObject {
 	/**
 	 * @return the ingredient
 	 */
-	public IngredientType getIngredient() {
-		return ingredient;
+	public String getName() {
+		return name;
 	}
 
 	/**
 	 * @param ingredient the ingredient to set
 	 */
-	public void setIngredient(IngredientType ingredient) {
-		this.ingredient = ingredient;
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	/**
@@ -85,13 +83,18 @@ public class Ingredient extends DomainObject {
 
 	/**
 	 * @param amount the amount to set
+	 * 
+	 * @throws IllegalArgumentException if amount is less than 0
 	 */
 	public void setAmount(Integer amount) {
+		if (amount < 0) {
+			throw new IllegalArgumentException();
+		}
 		this.amount = amount;
 	}
 	    
 	@Override
 	public String toString() {
-		return "Ingredient [ingredient=" + ingredient + ", amount=" + amount + "]";
+		return "Ingredient [name=" + name + ", amount=" + amount + "]";
 	}
 }
