@@ -32,11 +32,13 @@ public class InventoryTest {
         inventoryService.save( ivt );
     }
     
-    @Test
-    @Transactional
+    
+    
     /**
      * Tests adding ingredients that do and don't already exist.
      */
+    @Transactional
+    @Test
     public void testAddAndEditValidIngredientsInventory () {
         Inventory ivt = inventoryService.getInventory();
 
