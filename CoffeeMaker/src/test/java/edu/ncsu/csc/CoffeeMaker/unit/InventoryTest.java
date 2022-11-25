@@ -11,6 +11,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
 import edu.ncsu.csc.CoffeeMaker.TestConfig;
+import edu.ncsu.csc.CoffeeMaker.models.Ingredient;
 import edu.ncsu.csc.CoffeeMaker.models.Inventory;
 import edu.ncsu.csc.CoffeeMaker.models.Recipe;
 import edu.ncsu.csc.CoffeeMaker.services.InventoryService;
@@ -22,152 +23,150 @@ public class InventoryTest {
 
     @Autowired
     private InventoryService inventoryService;
+    
 
     @BeforeEach
     public void setup () {
         final Inventory ivt = inventoryService.getInventory();
-
-        ivt.setChocolate( 500 );
-        ivt.setCoffee( 500 );
-        ivt.setMilk( 500 );
-        ivt.setSugar( 500 );
 
         inventoryService.save( ivt );
     }
     
     @Test
     @Transactional
-    public void testConsumeInventory () {
-        final Inventory i = inventoryService.getInventory();
-
-        final Recipe recipe = new Recipe();
-        recipe.setName( "Delicious Not-Coffee" );
-        recipe.setChocolate( 10 );
-        recipe.setMilk( 20 );
-        recipe.setSugar( 5 );
-        recipe.setCoffee( 1 );
-
-        recipe.setPrice( 5 );
-
-        i.useIngredients( recipe );
-
-        /*
-         * Make sure that all of the inventory fields are now properly updated
-         */
-
-        Assertions.assertEquals( 490, (int) i.getChocolate() );
-        Assertions.assertEquals( 480, (int) i.getMilk() );
-        Assertions.assertEquals( 495, (int) i.getSugar() );
-        Assertions.assertEquals( 499, (int) i.getCoffee() );
-    }
-
-    @Test
-    @Transactional
-    public void testAddInventory1 () {
+    /**
+     * Tests adding ingredients that do and don't already exist.
+     */
+    public void testAddAndEditValidIngredientsInventory () {
         Inventory ivt = inventoryService.getInventory();
 
-        ivt.addIngredients( 5, 3, 7, 2 );
+        ivt.addIngredients("Coffee", 500);
+        ivt.addIngredients("Pumpkin Spice", 500);
+        ivt.addIngredients("Milk", 500);
+        ivt.addIngredients("Sugar", 500);
 
-        /* Save and retrieve again to update with DB */
         inventoryService.save( ivt );
 
         ivt = inventoryService.getInventory();
 
-        Assertions.assertEquals( 505, (int) ivt.getCoffee(),
-                "Adding to the inventory should result in correctly-updated values for coffee" );
-        Assertions.assertEquals( 503, (int) ivt.getMilk(),
-                "Adding to the inventory should result in correctly-updated values for milk" );
-        Assertions.assertEquals( 507, (int) ivt.getSugar(),
-                "Adding to the inventory should result in correctly-updated values sugar" );
-        Assertions.assertEquals( 502, (int) ivt.getChocolate(),
-                "Adding to the inventory should result in correctly-updated values chocolate" );
+        Assertions.assertEquals( 500, ivt.getIngredients().get(0).getAmount(), "Adding to the inventory should result in correctly-updated values for coffee" );
+        Assertions.assertEquals( 500, ivt.getIngredients().get(1).getAmount(), "Adding to the inventory should result in correctly-updated values for milk" );
+        Assertions.assertEquals( 500, ivt.getIngredients().get(2).getAmount(), "Adding to the inventory should result in correctly-updated values sugar" );
+        Assertions.assertEquals( 500, ivt.getIngredients().get(3).getAmount(), "Adding to the inventory should result in correctly-updated values chocolate" );
+
+        
+        //editing ingredients that are already in inventory
+        ivt.addIngredients("Coffee", 600);
+        ivt.addIngredients("Milk", 400);
+        
+        inventoryService.save( ivt );
+
+        //index might be off
+        Assertions.assertEquals( 600, ivt.getIngredients().get(0).getAmount(), "Adding to the inventory should result in correctly-updated values for coffee" );
+        Assertions.assertEquals( 500, ivt.getIngredients().get(1).getAmount(), "Adding to the inventory should result in correctly-updated values for milk" );
+        Assertions.assertEquals( 400, ivt.getIngredients().get(2).getAmount(), "Adding to the inventory should result in correctly-updated values sugar" );
+        Assertions.assertEquals( 500, ivt.getIngredients().get(3).getAmount(), "Adding to the inventory should result in correctly-updated values chocolate" );
 
     }
 
     @Test
     @Transactional
-    public void testAddInventory2 () {
+    /**
+     * Tests adding ingredients with invalid amounts that don't already exist.
+     */
+    public void testAddInvalidIngredientsInventory () {
         final Inventory ivt = inventoryService.getInventory();
 
+        ivt.addIngredients("Coffee", 500);
+        ivt.addIngredients("Pumpkin Spice", 1);
+        ivt.addIngredients("Milk", 0);
+        
         try {
-            ivt.addIngredients( -5, 3, 7, 2 );
+            ivt.addIngredients("Sugar", -1);
+            Assertions.fail("Cannot add an ingredient with a negative number");
         }
         catch ( final IllegalArgumentException iae ) {
-            Assertions.assertEquals( 500, (int) ivt.getCoffee(),
+            Assertions.assertEquals( 500, ivt.getIngredients().get(0).getAmount(),
                     "Trying to update the Inventory with an invalid value for coffee should result in no changes -- coffee" );
-            Assertions.assertEquals( 500, (int) ivt.getMilk(),
+            Assertions.assertEquals( 1, ivt.getIngredients().get(1).getAmount(),
                     "Trying to update the Inventory with an invalid value for coffee should result in no changes -- milk" );
-            Assertions.assertEquals( 500, (int) ivt.getSugar(),
+            Assertions.assertEquals( 0, ivt.getIngredients().get(2).getAmount(),
                     "Trying to update the Inventory with an invalid value for coffee should result in no changes -- sugar" );
-            Assertions.assertEquals( 500, (int) ivt.getChocolate(),
-                    "Trying to update the Inventory with an invalid value for coffee should result in no changes -- chocolate" );
         }
     }
 
+    
+    
+    
+    
     @Test
     @Transactional
-    public void testAddInventory3 () {
-        final Inventory ivt = inventoryService.getInventory();
+    /**
+     * Tests adding ingredients with invalid amounts that do already exist.
+     */
+    public void testEditInvalidIngredientsInventory () {
+    	final Inventory ivt = inventoryService.getInventory();
 
+        ivt.addIngredients("Coffee", 500);
+        ivt.addIngredients("Pumpkin Spice", 500);
+        ivt.addIngredients("Milk", 500);
+        ivt.addIngredients("Sugar", 500);
+        
         try {
-            ivt.addIngredients( 5, -3, 7, 2 );
+            ivt.addIngredients("Sugar", -1);
+            Assertions.fail("Cannot add an ingredient with a negative number");
         }
         catch ( final IllegalArgumentException iae ) {
-            Assertions.assertEquals( 500, (int) ivt.getCoffee(),
-                    "Trying to update the Inventory with an invalid value for milk should result in no changes -- coffee" );
-            Assertions.assertEquals( 500, (int) ivt.getMilk(),
-                    "Trying to update the Inventory with an invalid value for milk should result in no changes -- milk" );
-            Assertions.assertEquals( 500, (int) ivt.getSugar(),
-                    "Trying to update the Inventory with an invalid value for milk should result in no changes -- sugar" );
-            Assertions.assertEquals( 500, (int) ivt.getChocolate(),
-                    "Trying to update the Inventory with an invalid value for milk should result in no changes -- chocolate" );
-
+            Assertions.assertEquals( 500, ivt.getIngredients().get(0).getAmount(),
+                    "Trying to update the Inventory with an invalid value for coffee should result in no changes -- coffee" );
+            Assertions.assertEquals( 1, ivt.getIngredients().get(1).getAmount(),
+                    "Trying to update the Inventory with an invalid value for coffee should result in no changes -- milk" );
+            Assertions.assertEquals( 0, ivt.getIngredients().get(2).getAmount(),
+                    "Trying to update the Inventory with an invalid value for coffee should result in no changes -- sugar" );
         }
 
     }
 
+    
     @Test
     @Transactional
-    public void testAddInventory4 () {
-        final Inventory ivt = inventoryService.getInventory();
+    public void testConsumeInventory () {
+        Inventory ivt = inventoryService.getInventory();
+        
+        ivt.addIngredients("Coffee", 500);
+        ivt.addIngredients("Pumpkin Spice", 500);
+        ivt.addIngredients("Milk", 500);
+        ivt.addIngredients("Sugar", 500);
 
-        try {
-            ivt.addIngredients( 5, 3, -7, 2 );
-        }
-        catch ( final IllegalArgumentException iae ) {
-            Assertions.assertEquals( 500, (int) ivt.getCoffee(),
-                    "Trying to update the Inventory with an invalid value for sugar should result in no changes -- coffee" );
-            Assertions.assertEquals( 500, (int) ivt.getMilk(),
-                    "Trying to update the Inventory with an invalid value for sugar should result in no changes -- milk" );
-            Assertions.assertEquals( 500, (int) ivt.getSugar(),
-                    "Trying to update the Inventory with an invalid value for sugar should result in no changes -- sugar" );
-            Assertions.assertEquals( 500, (int) ivt.getChocolate(),
-                    "Trying to update the Inventory with an invalid value for sugar should result in no changes -- chocolate" );
+        inventoryService.save( ivt );
+        
+        ivt = inventoryService.getInventory();
+        
+        Ingredient ing1 = ivt.getIngredients().get(0);
+        Ingredient ing2 = ivt.getIngredients().get(1);
+        Ingredient ing3 = ivt.getIngredients().get(2);
+        Ingredient ing4 = ivt.getIngredients().get(3);
+        
+        final Recipe recipe = new Recipe();
+        recipe.setName( "Delicious Not-Coffee" );
+        
+        recipe.addIngredient(ing1, 25);
+        recipe.addIngredient(ing2, 20);
+        recipe.addIngredient(ing3, 15);
+        recipe.addIngredient(ing4, 10);
+        recipe.setPrice( 5 );
 
-        }
+        ivt.useIngredients( recipe );
 
+
+        Assertions.assertEquals( 475, ivt.getIngredients().get(0));
+        Assertions.assertEquals( 480, ivt.getIngredients().get(1));
+        Assertions.assertEquals( 485, ivt.getIngredients().get(2));
+        Assertions.assertEquals( 490, ivt.getIngredients().get(3));
+        
+        inventoryService.save( ivt );
     }
 
-    @Test
-    @Transactional
-    public void testAddInventory5 () {
-        final Inventory ivt = inventoryService.getInventory();
-
-        try {
-            ivt.addIngredients( 5, 3, 7, -2 );
-        }
-        catch ( final IllegalArgumentException iae ) {
-            Assertions.assertEquals( 500, (int) ivt.getCoffee(),
-                    "Trying to update the Inventory with an invalid value for chocolate should result in no changes -- coffee" );
-            Assertions.assertEquals( 500, (int) ivt.getMilk(),
-                    "Trying to update the Inventory with an invalid value for chocolate should result in no changes -- milk" );
-            Assertions.assertEquals( 500, (int) ivt.getSugar(),
-                    "Trying to update the Inventory with an invalid value for chocolate should result in no changes -- sugar" );
-            Assertions.assertEquals( 500, (int) ivt.getChocolate(),
-                    "Trying to update the Inventory with an invalid value for chocolate should result in no changes -- chocolate" );
-
-        }
-
-    }
+    
 
 }

@@ -38,6 +38,16 @@ public class Inventory extends DomainObject {
     
 
     /**
+     * Gets the ingredients in the inventory.
+     *
+     * @return List of ingredients
+     */
+    public List<Ingredient> getIngredients () {
+    	return ingredients;
+    }
+    
+    
+    /**
      * Ensures that ingredient has enough units.
      *
      * @param ingredient type
@@ -45,9 +55,10 @@ public class Inventory extends DomainObject {
      * @throws IllegalArgumentException if the parameter isn't a positive integer
      */
     public Integer checkIngredient ( Ingredient ingredient ) throws IllegalArgumentException {
+    	//WB null?
     	int amountIngredient = ingredient.getAmount();
         if (amountIngredient < 0) {
-        	throw new IllegalArgumentException( "Units of chocolate must be a positive integer" );
+        	throw new IllegalArgumentException( "Units of ingredient must be a positive integer" );
         }
         return amountIngredient;
     }
@@ -120,12 +131,21 @@ public class Inventory extends DomainObject {
      * @param name of ingredient
      * @param amount of ingredient
      * @return true if successful, false if not
+     * 
+     * @throws IllegalArgumentException iae if amount is less than 0
      */
     public boolean addIngredients ( String name, Integer amount ) {
-    	//I believe handeled in constructor
-//        if ( amount < 0 ) {
-//            throw new IllegalArgumentException( "Amount cannot be negative" );
-//        }
+    	if (amount < 0) {
+    		throw new IllegalArgumentException();
+    	}
+    	
+    	//searching to see if ingredient already exists
+    	for (int i=0; i < ingredients.size(); i++) {
+    		if (ingredients.get(i).getName() == name) {
+    			ingredients.get(i).setAmount(amount);
+    			return true;
+    		}
+    	}
         Ingredient ingredient = new Ingredient(name, amount);
         ingredients.add(ingredient);
         return true;
