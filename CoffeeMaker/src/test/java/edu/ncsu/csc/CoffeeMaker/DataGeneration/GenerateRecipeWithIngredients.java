@@ -14,7 +14,6 @@ import edu.ncsu.csc.CoffeeMaker.TestConfig;
 import edu.ncsu.csc.CoffeeMaker.models.DomainObject;
 import edu.ncsu.csc.CoffeeMaker.models.Ingredient;
 import edu.ncsu.csc.CoffeeMaker.models.Recipe;
-import edu.ncsu.csc.CoffeeMaker.models.enums.IngredientType;
 import edu.ncsu.csc.CoffeeMaker.services.RecipeService;
 
 @ExtendWith ( SpringExtension.class )
@@ -38,9 +37,9 @@ public class GenerateRecipeWithIngredients {
 
         r1.setPrice( 50 );
 
-        r1.addIngredient( new Ingredient( IngredientType.COFFEE, 10 ) );
-        r1.addIngredient( new Ingredient( IngredientType.PUMPKIN_SPICE, 3 ) );
-        r1.addIngredient( new Ingredient( IngredientType.MILK, 2 ) );
+        r1.addIngredient(new Ingredient( "Coffee", 500 ), 10);
+        r1.addIngredient(new Ingredient( "Pumpkin Spice", 500 ), 5);
+        r1.addIngredient(new Ingredient( "Milk", 500 ), 3);
         
         recipeService.save( r1 );
         
