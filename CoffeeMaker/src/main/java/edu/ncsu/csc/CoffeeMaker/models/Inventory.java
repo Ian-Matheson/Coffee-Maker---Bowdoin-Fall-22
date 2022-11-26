@@ -4,9 +4,12 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.validation.constraints.Min;
 
 /**
@@ -25,6 +28,7 @@ public class Inventory extends DomainObject {
     private Long    id;
     
     /** id for inventory entry */
+    @OneToMany( cascade = CascadeType.ALL, fetch = FetchType.EAGER )
     private List<Ingredient> ingredients;
 
     /**
@@ -108,13 +112,15 @@ public class Inventory extends DomainObject {
         	for (int i=0; i < ingredients.size(); i++) {
         		int inventoryIngredientAmount = ingredients.get(i).getAmount();
         		String inventoryIngredientName = ingredients.get(i).getName();
-
-        		for (int j=0; j < ingredients.size(); j++) {
+        	
+        		for (int j=0; j < recipeIngredients.size(); j++) {
             		String recipeIngredientName = recipeIngredients.get(j).getName();
             		int recipeIngredientAmount = recipeIngredients.get(j).getAmount();
-     
+            		
         			if (inventoryIngredientName.equals(recipeIngredientName)) {
-        				ingredients.get(i).setAmount( inventoryIngredientAmount - recipeIngredientAmount);
+        				int newAmount = inventoryIngredientAmount - recipeIngredientAmount;
+        				Ingredient newIng = new Ingredient(inventoryIngredientName, newAmount);
+        				ingredients.set(i, newIng);
         			}
         		}
         	}

@@ -121,9 +121,11 @@ public class InventoryTest {
         catch ( final IllegalArgumentException iae ) {
             Assertions.assertEquals( 500, ivt.getIngredients().get(0).getAmount(),
                     "Trying to update the Inventory with an invalid value for coffee should result in no changes -- coffee" );
-            Assertions.assertEquals( 1, ivt.getIngredients().get(1).getAmount(),
+            Assertions.assertEquals( 500, ivt.getIngredients().get(1).getAmount(),
                     "Trying to update the Inventory with an invalid value for coffee should result in no changes -- milk" );
-            Assertions.assertEquals( 0, ivt.getIngredients().get(2).getAmount(),
+            Assertions.assertEquals( 500, ivt.getIngredients().get(2).getAmount(),
+                    "Trying to update the Inventory with an invalid value for coffee should result in no changes -- sugar" );
+            Assertions.assertEquals( 500, ivt.getIngredients().get(3).getAmount(),
                     "Trying to update the Inventory with an invalid value for coffee should result in no changes -- sugar" );
         }
 
@@ -160,13 +162,15 @@ public class InventoryTest {
 
         ivt.useIngredients( recipe );
 
-
-        Assertions.assertEquals( 475, ivt.getIngredients().get(0));
-        Assertions.assertEquals( 480, ivt.getIngredients().get(1));
-        Assertions.assertEquals( 485, ivt.getIngredients().get(2));
-        Assertions.assertEquals( 490, ivt.getIngredients().get(3));
-        
         inventoryService.save( ivt );
+        
+        ivt = inventoryService.getInventory();
+        
+        Assertions.assertEquals( 475, ivt.getIngredients().get(0).getAmount());
+        Assertions.assertEquals( 480, ivt.getIngredients().get(1).getAmount());
+        Assertions.assertEquals( 485, ivt.getIngredients().get(2).getAmount());
+        Assertions.assertEquals( 490, ivt.getIngredients().get(3).getAmount());
+        
     }
 
     

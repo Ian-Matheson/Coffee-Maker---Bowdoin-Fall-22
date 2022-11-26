@@ -31,7 +31,7 @@ public class Recipe extends DomainObject {
     
     /** ingredients */
     @OneToMany( cascade = CascadeType.ALL, fetch = FetchType.EAGER )
-    private final List<Ingredient> ingredients;
+    private List<Ingredient> ingredients;
 
     /** Recipe price */
     @Min ( 0 )
@@ -126,8 +126,9 @@ public class Recipe extends DomainObject {
      */
     public boolean addIngredient (Ingredient ingredient, int amount) {
     	//Maybe need cases for when can't add ingredient? like when ingredient null?
-    	ingredient.setAmount(amount);
-    	ingredients.add(ingredient);
+    	//TODO  check for duplicates! Make sure ingredient is in inventory!
+    	Ingredient temp = new Ingredient(ingredient.getName(), amount);
+    	ingredients.add(temp);
     	return true;
     }
     
@@ -136,7 +137,7 @@ public class Recipe extends DomainObject {
      *
      * @return true if the ingredient is successfully added, otherwise return false
      */
-    //Would these two ingredients ever have different amounts?
+    //Would these two ingredients ever have different amounts? NO
     public boolean editIngredient (Ingredient ingredient, int amount) {
     	for (int i=0; i < ingredients.size(); i++) {
     		if (ingredients.get(i).equals(ingredient)) {
@@ -175,18 +176,20 @@ public class Recipe extends DomainObject {
      */
     //DONT RLY GET THE POINT OF THIS
     public void updateRecipe ( final Recipe r ) {
-    	for (int i=0; i < ingredients.size(); i++) {
-    		String currName = ingredients.get(i).getName();
-    		
-    		for (int j=0; j < r.getIngredients().size(); j++) {
-    			String newName = r.getIngredients().get(j).getName();
-    			if (currName.equals(newName)) {
-    				int newAmount = r.getIngredients().get(j).getAmount();
-    				ingredients.get(i).setAmount(newAmount);
-    			}
-    		}
-    	}
+//    	for (int i=0; i < ingredients.size(); i++) {
+//    		String currName = ingredients.get(i).getName();
+//    		
+//    		for (int j=0; j < r.getIngredients().size(); j++) {
+//    			String newName = r.getIngredients().get(j).getName();
+//    			if (currName.equals(newName)) {
+//    				int newAmount = r.getIngredients().get(j).getAmount();
+//    				ingredients.get(i).setAmount(newAmount);
+//    			}
+//    		}
+//    	}
+    	ingredients = r.getIngredients();
         setPrice( r.getPrice() );
+        setName( r.getName() );
     }
     
     @Override
