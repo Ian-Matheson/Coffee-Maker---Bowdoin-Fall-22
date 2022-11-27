@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 import edu.ncsu.csc.CoffeeMaker.models.Ingredient;
 import edu.ncsu.csc.CoffeeMaker.models.Inventory;
+import edu.ncsu.csc.CoffeeMaker.models.Recipe;
 import edu.ncsu.csc.CoffeeMaker.repositories.IngredientRepository;
 import edu.ncsu.csc.CoffeeMaker.repositories.InventoryRepository;
 
@@ -45,6 +46,10 @@ public class IngredientService extends Service<Ingredient, Long> {
     @Override
     protected JpaRepository getRepository () {
         return ingredientRepository;
+    }
+    
+    public Ingredient findByName ( final String name ) {
+        return ingredientRepository.findByName( name );
     }
 
 }
