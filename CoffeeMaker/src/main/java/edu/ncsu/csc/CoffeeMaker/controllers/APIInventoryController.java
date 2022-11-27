@@ -42,7 +42,7 @@ public class APIInventoryController extends APIController {
     @GetMapping ( BASE_PATH + "/inventory" )
     public ResponseEntity getInventory () {
         final Inventory inventory = service.getInventory();
-        return new ResponseEntity( inventory, HttpStatus.OK );
+        return new ResponseEntity("Inventory was successfully retrieved", HttpStatus.OK );
     }
 
     /**
@@ -54,6 +54,7 @@ public class APIInventoryController extends APIController {
      *            amounts to add to inventory
      * @return response to the request
      */
+    //error caught in creating ingredient?
     @PutMapping ( BASE_PATH + "/inventory" )
     public ResponseEntity updateInventory ( @RequestBody final Inventory inventory ) {
         final Inventory inventoryCurrent = service.getInventory();
@@ -61,9 +62,7 @@ public class APIInventoryController extends APIController {
         for (int i=0; i < inventory.getIngredients().size(); i++) {
         	inventoryCurrent.addIngredients(inventory.getIngredients().get(i).getName(), inventory.getIngredients().get(i).getAmount());
         }
-//     OLD:   inventoryCurrent.addIngredients( inventory.getCoffee(), inventory.getMilk(), inventory.getSugar(),
-//                inventory.getChocolate() );
         service.save( inventoryCurrent );
-        return new ResponseEntity( inventoryCurrent, HttpStatus.OK );
+        return new ResponseEntity("Inventory was successfully updated", HttpStatus.OK );
     }
 }
