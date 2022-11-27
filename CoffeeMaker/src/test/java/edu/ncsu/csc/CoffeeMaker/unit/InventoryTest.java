@@ -28,7 +28,6 @@ public class InventoryTest {
     @BeforeEach
     public void setup () {
         final Inventory ivt = inventoryService.getInventory();
-
         inventoryService.save( ivt );
     }
     

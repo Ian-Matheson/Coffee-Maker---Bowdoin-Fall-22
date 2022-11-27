@@ -14,6 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
+import edu.ncsu.csc.CoffeeMaker.models.Ingredient;
 import edu.ncsu.csc.CoffeeMaker.models.Recipe;
 import edu.ncsu.csc.CoffeeMaker.services.RecipeService;
 
@@ -47,10 +48,17 @@ public class TestDatabaseInteraction {
 	    
 	    r.setName("mocha");
 	    r.setPrice(50);
-	    r.setMilk(1);
-	    r.setSugar(1);
-	    r.setCoffee(2);
-	    r.setChocolate(1);
+	    
+        Ingredient ing1 = new Ingredient("Coffee", 500);
+        Ingredient ing2 = new Ingredient("Pumpkin Spice", 400);
+        Ingredient ing3 = new Ingredient("Milk", 300);
+        Ingredient ing4 = new Ingredient("Sugar", 200);
+        
+        r.addIngredient(ing1, 25);
+        r.addIngredient(ing2, 20);
+        r.addIngredient(ing3, 15);
+        r.addIngredient(ing4, 10);
+        r.setPrice( 5 );
 	    recipeService.save( r );
 		
 	    List<Recipe> dbRecipes = (List<Recipe>) recipeService.findAll();
@@ -61,26 +69,30 @@ public class TestDatabaseInteraction {
 
 	    assertEquals(r.getName(), dbRecipe.getName());
 	    assertEquals(r.getPrice(), dbRecipe.getPrice());
-	    assertEquals(r.getMilk(), dbRecipe.getMilk());
-	    assertEquals(r.getSugar(), dbRecipe.getSugar());
-	    assertEquals(r.getCoffee(), dbRecipe.getCoffee());
-	    assertEquals(r.getChocolate(), dbRecipe.getChocolate());
+	    assertEquals(r.getIngredients().get(0), dbRecipe.getIngredients().get(0));
+	    assertEquals(r.getIngredients().get(1), dbRecipe.getIngredients().get(1));
+	    assertEquals(r.getIngredients().get(2), dbRecipe.getIngredients().get(2));
+	    assertEquals(r.getIngredients().get(3), dbRecipe.getIngredients().get(3));
 	    
 	    Recipe recipeBN = recipeService.findByName("mocha");
 	    assertEquals(r.getName(), recipeBN.getName());
 	    
 	    dbRecipe.setPrice(15);
-	    dbRecipe.setSugar(12);
-	    dbRecipe.setCoffee(4);
-	    dbRecipe.setChocolate(2);
+	    dbRecipe.editIngredient(ing1, 12);
+	    dbRecipe.editIngredient(ing2, 8);
+	    dbRecipe.editIngredient(ing3, 4);
+	    dbRecipe.editIngredient(ing4, 2);
+
 	    recipeService.save(dbRecipe);
 
         assertEquals( 1, recipeService.count() );
 
         assertEquals( 15, (int) ( (Recipe) recipeService.findAll().get( 0 ) ).getPrice() );
-        assertEquals(12, dbRecipe.getSugar());
-        assertEquals(4, dbRecipe.getCoffee());
-        assertEquals(2, dbRecipe.getChocolate());
+        
+        assertEquals(12, dbRecipe.getIngredients().get(0).getAmount());
+        assertEquals(8, dbRecipe.getIngredients().get(1).getAmount());
+        assertEquals(4, dbRecipe.getIngredients().get(2).getAmount());
+        assertEquals(2, dbRecipe.getIngredients().get(3).getAmount());
 	       
 	}
 	
@@ -207,22 +219,27 @@ public class TestDatabaseInteraction {
 		
 		Recipe r = new Recipe();
 	    
+	    Ingredient ing1 = new Ingredient("Milk", 500);
+	    Ingredient ing2 = new Ingredient("Sugar", 400);
+	    Ingredient ing3 = new Ingredient("Coffee", 300);
+	    Ingredient ing4 = new Ingredient("Chocolate", 200);
+	    
 	    r.setName("mocha");
 	    r.setPrice(50);
-	    r.setMilk(1);
-	    r.setSugar(1);
-	    r.setCoffee(2);
-	    r.setChocolate(1);
+	    r.addIngredient(ing1, 1);
+		r.addIngredient(ing2, 1);
+		r.addIngredient(ing3, 2);
+		r.addIngredient(ing4, 1);
 	    recipeService.save( r );
 	    
 	    Recipe r2 = new Recipe();
 	    
 	    r2.setName("americano");
 	    r2.setPrice(50);
-	    r2.setMilk(1);
-	    r2.setSugar(1);
-	    r2.setCoffee(2);
-	    r2.setChocolate(1);
+	    r2.addIngredient(ing1, 1);
+		r2.addIngredient(ing2, 1);
+		r2.addIngredient(ing3, 2);
+		r2.addIngredient(ing4, 1);
 	    recipeService.save( r2 );
 		
 	    List<Recipe> dbRecipes = (List<Recipe>) recipeService.findAll();
@@ -242,10 +259,10 @@ public class TestDatabaseInteraction {
 
 	    assertEquals(r.getName(), dbRecipe1.getName());
 	    assertEquals(r.getPrice(), dbRecipe1.getPrice());
-	    assertEquals(r.getMilk(), dbRecipe1.getMilk());
-	    assertEquals(r.getSugar(), dbRecipe1.getSugar());
-	    assertEquals(r.getCoffee(), dbRecipe1.getCoffee());
-	    assertEquals(r.getChocolate(), dbRecipe1.getChocolate());
+	    assertEquals(r.getIngredients().get(0), dbRecipe1.getIngredients().get(0));
+	    assertEquals(r.getIngredients().get(1), dbRecipe1.getIngredients().get(1));
+	    assertEquals(r.getIngredients().get(2), dbRecipe1.getIngredients().get(2));
+	    assertEquals(r.getIngredients().get(3), dbRecipe1.getIngredients().get(3));
 	    
 	    recipeService.delete(dbRecipe);
 	    

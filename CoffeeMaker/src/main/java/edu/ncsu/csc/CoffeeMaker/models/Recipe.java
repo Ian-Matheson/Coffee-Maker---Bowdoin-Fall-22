@@ -140,7 +140,8 @@ public class Recipe extends DomainObject {
     //Would these two ingredients ever have different amounts? NO
     public boolean editIngredient (Ingredient ingredient, int amount) {
     	for (int i=0; i < ingredients.size(); i++) {
-    		if (ingredients.get(i).equals(ingredient)) {
+    		//CHANGED THIS TO NAME BECAUSE OUR EQUALS METHOD ISN'T SET UP
+    		if (ingredients.get(i).getName().equals(ingredient.getName())) {
     			ingredient.setAmount(amount);
     			ingredients.set(i, ingredient);
     			return true;
@@ -207,6 +208,7 @@ public class Recipe extends DomainObject {
 
     @Override
     public boolean equals ( final Object obj ) {
+    	if ( name == obj)
         if ( this == obj ) {
             return true;
         }

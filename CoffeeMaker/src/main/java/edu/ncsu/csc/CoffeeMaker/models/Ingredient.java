@@ -80,6 +80,7 @@ public class Ingredient extends DomainObject {
 		this.name = name;
 	}
 
+
 	/**
 	 * @return the amount
 	 */

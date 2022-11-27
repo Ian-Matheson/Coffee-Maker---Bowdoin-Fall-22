@@ -60,7 +60,6 @@ public class Inventory extends DomainObject {
      * or if ingredient is null
      */
     public Integer checkIngredient ( Ingredient ingredient ) throws IllegalArgumentException {
-    	//WB null?
     	if (ingredient == null) {
         	throw new IllegalArgumentException( "ingredient cannot be null" );
         }
@@ -115,7 +114,6 @@ public class Inventory extends DomainObject {
      * @return true if recipe is made.
      * @throws IllegalArgumentException iae if the recipe is null
      */
-    //WORKS BASED OFF NAME OF INGREDIENT
     public boolean useIngredients ( final Recipe r ) {
 
         if ( enoughIngredients( r ) ) {
