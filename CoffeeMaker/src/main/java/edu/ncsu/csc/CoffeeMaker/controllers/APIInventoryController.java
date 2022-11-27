@@ -42,7 +42,7 @@ public class APIInventoryController extends APIController {
     @GetMapping ( BASE_PATH + "/inventory" )
     public ResponseEntity getInventory () {
         final Inventory inventory = service.getInventory();
-        return new ResponseEntity("Inventory was successfully retrieved", HttpStatus.OK );
+        return new ResponseEntity( errorResponse("Inventory was successfully retrieved"), HttpStatus.OK );
     }
 
     /**
@@ -58,11 +58,15 @@ public class APIInventoryController extends APIController {
     @PutMapping ( BASE_PATH + "/inventory" )
     public ResponseEntity updateInventory ( @RequestBody final Inventory inventory ) {
         final Inventory inventoryCurrent = service.getInventory();
-        //Literally no idea if this is right.
-        for (int i=0; i < inventory.getIngredients().size(); i++) {
-        	inventoryCurrent.addIngredients(inventory.getIngredients().get(i).getName(), inventory.getIngredients().get(i).getAmount());
+        for (int i = 0; i < inventoryCurrent.getIngredients().size(); i++) {
+        	int curAmount = inventoryCurrent.getIngredients().get(i).getAmount();
+        	String curName = inventoryCurrent.getIngredients().get(i).getName();
+        	if (curAmount <= 0) {
+        		return new ResponseEntity( errorResponse( curName + "is an ingredient in the Inventory with amount that is not a positive integer" ),
+                    HttpStatus.CONFLICT );
+        	}
         }
         service.save( inventoryCurrent );
-        return new ResponseEntity("Inventory was successfully updated", HttpStatus.OK );
+        return new ResponseEntity( successResponse("Inventory was successfully updated"), HttpStatus.OK );
     }
 }

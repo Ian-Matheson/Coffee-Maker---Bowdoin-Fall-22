@@ -79,16 +79,30 @@ public class APIRecipeController extends APIController {
             return new ResponseEntity( errorResponse( "Recipe with the name " + recipe.getName() + " already exists" ),
                     HttpStatus.CONFLICT );
         }
-        if ( service.findAll().size() < 3 ) {
-        	service.save( recipe );
-            return new ResponseEntity( successResponse( recipe.getName() + " successfully created" ), HttpStatus.OK );
+        if (recipe.getPrice() < 0) {
+        	return new ResponseEntity( errorResponse( "Recipe has a price that is not a positive integer" ),
+                    HttpStatus.CONFLICT );
+        } 
+        if (recipe.getIngredients().size() == 0) {
+        	return new ResponseEntity( errorResponse( "There are no ingredients in this recipe" ),
+                    HttpStatus.CONFLICT );
         }
-        else {
-            return new ResponseEntity(
-                    errorResponse( "Insufficient space in recipe book for recipe " + recipe.getName() ),
-                    HttpStatus.INSUFFICIENT_STORAGE );
+        for (int i = 0; i < recipe.getIngredients().size(); i++) {
+        	int curAmount = recipe.getIngredients().get(i).getAmount();
+        	String curName = recipe.getIngredients().get(i).getName();
+        	if (curAmount <= 0) {
+        		return new ResponseEntity( errorResponse( curName + "is an ingredient in the Recipe with amount that is not a positive integer" ),
+                    HttpStatus.CONFLICT );
+        	}
         }
-
+        if ( service.findAll().size() == 3 ) {
+        	return new ResponseEntity( errorResponse(  "There are already three created ingredients" ),
+                    HttpStatus.CONFLICT );
+        }
+        
+        
+       	service.save( recipe );
+       	return new ResponseEntity( successResponse( recipe.getName() + " successfully created" ), HttpStatus.OK );
     }
 
     /**
