@@ -56,10 +56,14 @@ public class Inventory extends DomainObject {
      *
      * @param ingredient type
      * @return checked amount of that ingredient
-     * @throws IllegalArgumentException if the parameter isn't a positive integer
+     * @throws IllegalArgumentException if the parameter isn't a positive integer 
+     * or if ingredient is null
      */
     public Integer checkIngredient ( Ingredient ingredient ) throws IllegalArgumentException {
     	//WB null?
+    	if (ingredient == null) {
+        	throw new IllegalArgumentException( "ingredient cannot be null" );
+        }
     	int amountIngredient = ingredient.getAmount();
         if (amountIngredient < 0) {
         	throw new IllegalArgumentException( "Units of ingredient must be a positive integer" );
@@ -73,9 +77,15 @@ public class Inventory extends DomainObject {
      *
      * @param r recipe to check if there are enough ingredients
      * @return true if enough ingredients to make the beverage
+     * 
+     * @throws IllegalArgumentException iae if the recipe is null
      */
     //WORKS BASED OFF NAME OF INGREDIENT
     public boolean enoughIngredients ( final Recipe r ) {
+    	if (r == null) {
+        	throw new IllegalArgumentException( "recipe cannot be null" );
+        }
+    	
     	List<Ingredient> recipeIngredients = r.getIngredients();
     	
     	for (int i=0; i < recipeIngredients.size(); i++) {
@@ -103,9 +113,11 @@ public class Inventory extends DomainObject {
      *
      * @param r recipe to make
      * @return true if recipe is made.
+     * @throws IllegalArgumentException iae if the recipe is null
      */
     //WORKS BASED OFF NAME OF INGREDIENT
     public boolean useIngredients ( final Recipe r ) {
+
         if ( enoughIngredients( r ) ) {
         	List<Ingredient> recipeIngredients = r.getIngredients();
         	
@@ -138,10 +150,10 @@ public class Inventory extends DomainObject {
      * @param amount of ingredient
      * @return true if successful, false if not
      * 
-     * @throws IllegalArgumentException iae if amount is less than 0
+     * @throws IllegalArgumentException iae if amount is less than 0, name is null or empty string.
      */
     public boolean addIngredients ( String name, Integer amount ) {
-    	if (amount < 0) {
+    	if (amount < 0 || name == null || "".equals(name)) {
     		throw new IllegalArgumentException();
     	}
     	
@@ -166,8 +178,8 @@ public class Inventory extends DomainObject {
     public String toString () {
         final StringBuffer buf = new StringBuffer();
         for (int i=0; i < ingredients.size(); i++) {
-        	buf.append(ingredients.get(i).getName());
-        	buf.append(ingredients.get(i).getAmount());
+        	buf.append("[" + ingredients.get(i).getName() + "-");
+        	buf.append(ingredients.get(i).getAmount() + "] ");
         }
         return buf.toString();
     }
@@ -190,6 +202,9 @@ public class Inventory extends DomainObject {
      *            the ID
      */
     public void setId ( final Long id ) {
+    	if (id < 0) {
+    		throw new IllegalArgumentException();
+    	}
         this.id = id;
     }
 
