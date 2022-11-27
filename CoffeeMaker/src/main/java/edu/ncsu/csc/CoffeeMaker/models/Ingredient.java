@@ -57,6 +57,9 @@ public class Ingredient extends DomainObject {
 	 * @param id the id to set
 	 */
 	public void setId(Long id) {
+		if (id < 0) {
+			throw new IllegalArgumentException();
+		}
 		this.id = id;
 	}
 
@@ -71,6 +74,9 @@ public class Ingredient extends DomainObject {
 	 * @param ingredient the ingredient to set
 	 */
 	public void setName(String name) {
+		if (name == null || "".equals(name)) {
+			throw new IllegalArgumentException();
+		}
 		this.name = name;
 	}
 
