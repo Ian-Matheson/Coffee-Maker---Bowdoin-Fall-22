@@ -74,6 +74,7 @@ public class TestDatabaseInteraction {
 	    assertEquals(r.getIngredients().get(2), dbRecipe.getIngredients().get(2));
 	    assertEquals(r.getIngredients().get(3), dbRecipe.getIngredients().get(3));
 	    
+	    
 	    Recipe recipeBN = recipeService.findByName("mocha");
 	    assertEquals(r.getName(), recipeBN.getName());
 	    
@@ -96,27 +97,32 @@ public class TestDatabaseInteraction {
 	       
 	}
 	
-	/**
-	 * @Test
+
+ 	@Test
 	@Transactional
 	public void testInvalidRecipes(){
 		
+	    Ingredient ing1 = new Ingredient("Coffee", 500);
+        Ingredient ing2 = new Ingredient("Pumpkin Spice", 400);
+        Ingredient ing3 = new Ingredient("Milk", 300);
+        Ingredient ing4 = new Ingredient("Sugar", 200);
+        
 		Recipe r1 = new Recipe();
 		r1.setName("mocha");
 	    r1.setPrice(50);
-	    r1.setMilk(1);
-	    r1.setSugar(1);
-	    r1.setCoffee(2);
-	    r1.setChocolate(1);
+        r1.addIngredient(ing1, 1);
+        r1.addIngredient(ing2, 1);
+        r1.addIngredient(ing3, 1);
+        r1.addIngredient(ing4, 1);
 	    recipeService.save( r1 );
 	    
 	    Recipe r2 = new Recipe();
 		r2.setName("latte");
 	    r2.setPrice(50);
-	    r2.setMilk(3);
-	    r2.setSugar(1);
-	    r2.setCoffee(3);
-	    r2.setChocolate(0);
+	    r2.addIngredient(ing1, 3);
+        r2.addIngredient(ing2, 1);
+        r2.addIngredient(ing3, 3);
+        r2.addIngredient(ing4, 0);
 	    recipeService.save( r2 );
 	    
 	    //testing setting a duplicate recipe
@@ -124,10 +130,10 @@ public class TestDatabaseInteraction {
 	    	Recipe r3 = new Recipe();
 			r3.setName("latte");
 		    r3.setPrice(50);
-		    r3.setMilk(3);
-		    r3.setSugar(1);
-		    r3.setCoffee(3);
-		    r3.setChocolate(0);
+		    r3.addIngredient(ing1, 3);
+	        r3.addIngredient(ing2, 1);
+	        r3.addIngredient(ing3, 3);
+	        r3.addIngredient(ing4, 0);
 		    recipeService.save( r3 );
 		    Assertions.fail("Adding a duplicate recipe to a list should throw iae but did not");
 	    } catch (IllegalArgumentException iae) {
@@ -137,10 +143,10 @@ public class TestDatabaseInteraction {
 	    Recipe r3 = new Recipe();
 		r3.setName("espresso");
 	    r3.setPrice(50);
-	    r3.setMilk(1);
-	    r3.setSugar(1);
-	    r3.setCoffee(5);
-	    r3.setChocolate(1);
+	    r3.addIngredient(ing1, 1);
+        r3.addIngredient(ing2, 1);
+        r3.addIngredient(ing3, 5);
+        r3.addIngredient(ing4, 1);
 	    recipeService.save( r3 );
 	    
 	    //testing too many recipes
@@ -148,10 +154,10 @@ public class TestDatabaseInteraction {
 	    	Recipe r4 = new Recipe();
 			r4.setName("black");
 		    r4.setPrice(20);
-		    r4.setMilk(0);
-		    r4.setSugar(0);
-		    r4.setCoffee(3);
-		    r4.setChocolate(0);
+		    r4.addIngredient(ing1, 0);
+	        r4.addIngredient(ing2, 0);
+	        r4.addIngredient(ing3, 3);
+	        r4.addIngredient(ing4, 0);
 		    recipeService.save( r4 );
 		    Assertions.fail("Adding a fourth recipe to a list should throw iae but did not");
 	    } catch (IllegalArgumentException iae) {
@@ -167,12 +173,14 @@ public class TestDatabaseInteraction {
 			r.setName(null);
 			Assertions.fail("Setting name to null should throw iae but did not");
 		} catch (IllegalArgumentException iae) {
+			//Exception caught, carry on
 		}
 		
 		try {
 			r.setName("");
 			Assertions.fail("Setting name to empty string should throw iae but did not");
 		} catch (IllegalArgumentException iae) {
+			//Exception caught, carry on
 		}
 	
 		//testing set price
@@ -180,37 +188,19 @@ public class TestDatabaseInteraction {
 	    	r.setPrice(-1);
 	    	Assertions.fail("Setting price to a negative number should throw iae but did not");
 	    } catch (IllegalArgumentException iae) {
+			//Exception caught, carry on
 		}
 	    
 	    //testing set milk
 	    try {
-	    	r.setMilk(-1);
+	    	r.addIngredient(ing1, -1);
 	    	Assertions.fail("Setting milk to a negative number should throw iae but did not");
 	    } catch (IllegalArgumentException iae) {
+			//Exception caught, carry on
 		}
 	    
-	    //testing set sugar
-	    try {
-	    	r.setSugar(-1);
-	    	Assertions.fail("Setting milk to a negative number should throw iae but did not");
-	    } catch (IllegalArgumentException iae) {
-		}
-	    
-	    //testing set coffee
-	    try {
-	    	r.setCoffee(-1);
-	    	Assertions.fail("Setting coffee to a negative number should throw iae but did not");
-	    } catch (IllegalArgumentException iae) {
-		}
-	    
-	    //testing set chocolate
-	    try {
-	    	r.setChocolate(-1);
-	    	Assertions.fail("Setting chocolate to a negative number should throw iae but did not");
-	    } catch (IllegalArgumentException iae) {
-		}
 	}
-	 */
+
 	
 	
 	@Test
@@ -272,20 +262,26 @@ public class TestDatabaseInteraction {
 
 	}
 	
-	/**
-	 * @Test
+
+	@Test
 	@Transactional
 	public void testInvalidDeleteRecipes(){
+
+	    Ingredient ing1 = new Ingredient("Milk", 500);
+	    Ingredient ing2 = new Ingredient("Sugar", 400);
+	    Ingredient ing3 = new Ingredient("Coffee", 300);
+	    Ingredient ing4 = new Ingredient("Chocolate", 200);
+	    
 
 		//testing deleting a ticket that has already been deleted
 	    try {
 			Recipe r1 = new Recipe();
 			r1.setName("mocha");
 		    r1.setPrice(50);
-		    r1.setMilk(1);
-		    r1.setSugar(1);
-		    r1.setCoffee(2);
-		    r1.setChocolate(1);
+		    r1.addIngredient(ing1, 1);
+			r1.addIngredient(ing2, 1);
+			r1.addIngredient(ing3, 2);
+			r1.addIngredient(ing4, 1);
 		    recipeService.save( r1 );
 		    
 		    recipeService.delete( r1 );
@@ -302,10 +298,10 @@ public class TestDatabaseInteraction {
 			Recipe r2 = new Recipe();
 			r2.setName("black");
 		    r2.setPrice(20);
-		    r2.setMilk(0);
-		    r2.setSugar(0);
-		    r2.setCoffee(3);
-		    r2.setChocolate(0);
+		    r2.addIngredient(ing1, 0);
+			r2.addIngredient(ing2, 0);
+			r2.addIngredient(ing3, 3);
+			r2.addIngredient(ing4, 0);
 		    recipeService.save( r2 );
 		    
 		    recipeService.deleteAll();
@@ -317,6 +313,5 @@ public class TestDatabaseInteraction {
 	    	Assertions.assertEquals( 0, recipeService.count() );
 		}
 	}
-	 */
 	
 }

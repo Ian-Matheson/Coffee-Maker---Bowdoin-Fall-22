@@ -43,5 +43,42 @@ public class RecipeService extends Service<Recipe, Long> {
     public Recipe findByName ( final String name ) {
         return recipeRepository.findByName( name );
     }
+    
+    /**
+     * Saves the provided object into the database. If the object already
+     * exists, `save()` will perform an in-place update, overwriting the
+     * existing record.
+     *
+     * @param obj
+     *            The object to save into the database.
+     */
+    @Override
+    public void save ( final Recipe recipe ) {
+    	if (findByName(recipe.getName()) == null && count() < 3) {
+    		getRepository().saveAndFlush( recipe );
+    	}
+    	else if (findByName(recipe.getName()) != null && recipe.getId() == findByName(recipe.getName()).getId()) {
+    		getRepository().saveAndFlush( recipe );
+    	}
+    	else {
+    		throw new IllegalArgumentException();
+    	}
+    }
+    
+    /**
+     * Deletes an object from the database. This will remove the object from the
+     * database, but not from memory. Trying to save it again after deletion is
+     * undefined behaviour. YMMV.
+     *
+     * @param obj
+     *            The object to delete from the database.
+     */
+    @Override
+    public void delete ( final Recipe recipe ) {
+    	if (findByName(recipe.getName()) == null) {
+    		throw new IllegalArgumentException();
+    	}
+        getRepository().delete( recipe );
+    }
 
 }
