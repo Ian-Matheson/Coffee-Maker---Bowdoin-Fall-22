@@ -25,7 +25,7 @@ import edu.ncsu.csc.CoffeeMaker.services.RecipeService;
 @SpringBootTest ( classes = TestConfig.class )
 
 
-public class TestDatabaseInteraction {
+public class TestDatabaseInteractionRecipe {
 	
 	@Autowired
 	private RecipeService recipeService;
@@ -38,6 +38,7 @@ public class TestDatabaseInteraction {
 	@BeforeEach
 	public void setUp() throws Exception {
 		recipeService.deleteAll();
+		
 	}
 	
 	@Test
@@ -313,5 +314,8 @@ public class TestDatabaseInteraction {
 	    	Assertions.assertEquals( 0, recipeService.count() );
 		}
 	}
+	
+	//UPDATE RECIPE
+	//EDIT INGREDIENT
 	
 }
