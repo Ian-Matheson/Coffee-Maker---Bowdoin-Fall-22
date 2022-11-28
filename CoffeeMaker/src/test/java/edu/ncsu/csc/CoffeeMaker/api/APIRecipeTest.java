@@ -14,6 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.context.WebApplicationContext;
 
 import edu.ncsu.csc.CoffeeMaker.common.TestUtils;
 import edu.ncsu.csc.CoffeeMaker.models.Ingredient;
@@ -30,6 +31,9 @@ public class APIRecipeTest {
 
     @Autowired
     private MockMvc       mvc;
+    
+    @Autowired
+	private WebApplicationContext context;
 
     @Test
     @Transactional
@@ -176,7 +180,7 @@ public class APIRecipeTest {
 	    //????
 	    service.save(r4);
         mvc.perform( post( "/api/v1/recipes" ).contentType( MediaType.APPLICATION_JSON )
-                .content( TestUtils.asJsonString( r4 ) ) ).andExpect( status().isInsufficientStorage() );
+                .content( TestUtils.asJsonString( r ) ) ).andExpect( status().isInsufficientStorage() );
 
         Assertions.assertEquals( 3, service.count(), "Creating a fourth recipe should not get saved" );
     }
