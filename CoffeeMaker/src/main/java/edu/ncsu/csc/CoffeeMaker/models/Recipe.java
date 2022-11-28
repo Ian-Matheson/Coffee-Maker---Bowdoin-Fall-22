@@ -207,17 +207,6 @@ public class Recipe extends DomainObject {
      */
     //DONT RLY GET THE POINT OF THIS
     public void updateRecipe ( final Recipe r ) {
-//    	for (int i=0; i < ingredients.size(); i++) {
-//    		String currName = ingredients.get(i).getName();
-//    		
-//    		for (int j=0; j < r.getIngredients().size(); j++) {
-//    			String newName = r.getIngredients().get(j).getName();
-//    			if (currName.equals(newName)) {
-//    				int newAmount = r.getIngredients().get(j).getAmount();
-//    				ingredients.get(i).setAmount(newAmount);
-//    			}
-//    		}
-//    	}
     	if (r == null) {
     		throw new IllegalArgumentException();
     	}

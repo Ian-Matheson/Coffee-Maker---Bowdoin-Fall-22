@@ -55,10 +55,12 @@ public class RecipeService extends Service<Recipe, Long> {
     @Override
     public void save ( final Recipe recipe ) {
     	if (findByName(recipe.getName()) == null && count() < 3) {
-    		getRepository().saveAndFlush( recipe );
+    		super.save(recipe);
+    		//getRepository().saveAndFlush( recipe );
     	}
     	else if (findByName(recipe.getName()) != null && recipe.getId() == findByName(recipe.getName()).getId()) {
-    		getRepository().saveAndFlush( recipe );
+    		super.save(recipe);
+    		//getRepository().saveAndFlush( recipe );
     	}
     	else {
     		throw new IllegalArgumentException();

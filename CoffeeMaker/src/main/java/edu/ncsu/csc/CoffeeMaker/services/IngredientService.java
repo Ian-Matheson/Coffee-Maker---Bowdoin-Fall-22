@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Component;
 
 import edu.ncsu.csc.CoffeeMaker.models.Ingredient;
+import edu.ncsu.csc.CoffeeMaker.models.Recipe;
 import edu.ncsu.csc.CoffeeMaker.repositories.IngredientRepository;
 
 /**
@@ -28,7 +29,18 @@ public class IngredientService extends Service<Ingredient, Long> {
     @Autowired
     private IngredientRepository ingredientRepository;
 
-
+    
+    /**
+     * Find an ingredient with the provided name
+     * 
+     * @param name
+     *            Name of the recipe to find
+     * @return found recipe, null if none
+     */
+    public Ingredient findByName ( final String name ) {
+        return ingredientRepository.findByName( name );
+    }
+    
     /**
      * Retrieves the singleton IngredientRepository instance from the database, creating it
      * if it does not exist.
