@@ -16,6 +16,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
 import edu.ncsu.csc.CoffeeMaker.common.TestUtils;
+import edu.ncsu.csc.CoffeeMaker.models.Ingredient;
 import edu.ncsu.csc.CoffeeMaker.models.Recipe;
 import edu.ncsu.csc.CoffeeMaker.services.RecipeService;
 
@@ -36,12 +37,17 @@ public class APIRecipeTest {
         service.deleteAll();
 
         final Recipe r = new Recipe();
-        r.setChocolate( 5 );
-        r.setCoffee( 3 );
-        r.setMilk( 4 );
-        r.setSugar( 8 );
-        r.setPrice( 10 );
-        r.setName( "Mocha" );
+ 	    r.setName("mocha");
+ 	    r.setPrice(9);
+ 	    Ingredient milk = new Ingredient("milk", 2); 
+ 	    Ingredient sugar = new Ingredient("sugar", 2); 
+ 	    Ingredient coffee = new Ingredient("coffee", 2); 
+ 	    Ingredient chocolate = new Ingredient("chocolate", 2); 
+
+ 	    r.addIngredient(milk, 2);
+ 	    r.addIngredient(sugar, 2);
+ 	    r.addIngredient(coffee, 2);
+ 	    r.addIngredient(chocolate, 2);
 
         mvc.perform( post( "/api/v1/recipes" ).contentType( MediaType.APPLICATION_JSON )
                 .content( TestUtils.asJsonString( r ) ) ).andExpect( status().isOk() );
@@ -55,17 +61,21 @@ public class APIRecipeTest {
 
         service.deleteAll();
 
-        final Recipe recipe = new Recipe();
-        recipe.setName( "Delicious Not-Coffee" );
-        recipe.setChocolate( 10 );
-        recipe.setMilk( 20 );
-        recipe.setSugar( 5 );
-        recipe.setCoffee( 1 );
+        Recipe r = new Recipe();
+ 	    r.setName("mocha");
+ 	    r.setPrice(9);
+ 	    Ingredient milk = new Ingredient("milk", 2); 
+ 	    Ingredient sugar = new Ingredient("sugar", 2); 
+ 	    Ingredient coffee = new Ingredient("coffee", 2); 
+ 	    Ingredient chocolate = new Ingredient("chocolate", 2); 
 
-        recipe.setPrice( 5 );
+ 	    r.addIngredient(milk, 2);
+ 	    r.addIngredient(sugar, 2);
+ 	    r.addIngredient(coffee, 2);
+ 	    r.addIngredient(chocolate, 2);
 
         mvc.perform( post( "/api/v1/recipes" ).contentType( MediaType.APPLICATION_JSON )
-                .content( TestUtils.asJsonString( recipe ) ) );
+                .content( TestUtils.asJsonString( r ) ) );
 
         Assertions.assertEquals( 1, (int) service.count() );
 
@@ -80,13 +90,29 @@ public class APIRecipeTest {
 
         Assertions.assertEquals( 0, service.findAll().size(), "There should be no Recipes in the CoffeeMaker" );
         final String name = "Coffee";
-        final Recipe r1 = createRecipe( name, 50, 3, 1, 1, 0 );
+        Recipe r = new Recipe();
+ 	    r.setName(name);
+ 	    r.setPrice(9);
+ 	    Ingredient milk = new Ingredient("milk", 2); 
+ 	    Ingredient sugar = new Ingredient("sugar", 2); 
+ 	    Ingredient coffee = new Ingredient("coffee", 2); 
+ 	    Ingredient chocolate = new Ingredient("chocolate", 2); 
 
-        service.save( r1 );
+ 	    r.addIngredient(milk, 2);
+ 	    r.addIngredient(sugar, 2);
+ 	    r.addIngredient(coffee, 2);
+ 	    r.addIngredient(chocolate, 2);
 
-        final Recipe r2 = createRecipe( name, 50, 3, 1, 1, 0 );
-        mvc.perform( post( "/api/v1/recipes" ).contentType( MediaType.APPLICATION_JSON )
-                .content( TestUtils.asJsonString( r2 ) ) ).andExpect( status().is4xxClientError() );
+        service.save( r );
+
+        Recipe r2 = new Recipe();
+ 	    r.setName(name);
+ 	    r.setPrice(9);
+
+ 	    r2.addIngredient(milk, 2);
+ 	    
+ 	    mvc.perform( post( "/api/v1/recipes" ).contentType( MediaType.APPLICATION_JSON )
+                .content( TestUtils.asJsonString( r ) ) ).andExpect( status().is4xxClientError() );
 
         Assertions.assertEquals( 1, service.findAll().size(), "There should only one recipe in the CoffeeMaker" );
     }
@@ -99,36 +125,61 @@ public class APIRecipeTest {
         /* Tests to make sure that our cap of 3 recipes is enforced */
 
         Assertions.assertEquals( 0, service.findAll().size(), "There should be no Recipes in the CoffeeMaker" );
+        
+        final Recipe r = new Recipe();
+ 	    r.setName("Coffee");
+ 	    r.setPrice(9);
+ 	    Ingredient milk = new Ingredient("milk", 2); 
+ 	    Ingredient sugar = new Ingredient("sugar", 2); 
+ 	    Ingredient coffee = new Ingredient("coffee", 2); 
+ 	    Ingredient chocolate = new Ingredient("chocolate", 2); 
 
-        final Recipe r1 = createRecipe( "Coffee", 50, 3, 1, 1, 0 );
-        service.save( r1 );
-        final Recipe r2 = createRecipe( "Mocha", 50, 3, 1, 1, 2 );
+ 	    r.addIngredient(milk, 2);
+ 	    r.addIngredient(sugar, 2);
+ 	    r.addIngredient(coffee, 2);
+ 	    r.addIngredient(chocolate, 2);
+ 	    	    
+ 	    final Recipe r2 = new Recipe();
+	    r.setName("mocha");
+	    r.setPrice(9);
+
+	    r.addIngredient(milk, 2);
+	    r.addIngredient(sugar, 2);
+	    r.addIngredient(coffee, 2);
+	    r.addIngredient(chocolate, 2);
+	    
+	    final Recipe r3 = new Recipe();
+ 	    r.setName("Milk");
+ 	    r.setPrice(9);
+ 	    
+ 	    r.addIngredient(milk, 2);
+ 	    r.addIngredient(sugar, 2);
+ 	    r.addIngredient(coffee, 2);
+ 	    r.addIngredient(chocolate, 2);
+
+        service.save( r );
         service.save( r2 );
-        final Recipe r3 = createRecipe( "Latte", 60, 3, 2, 2, 0 );
         service.save( r3 );
 
         Assertions.assertEquals( 3, service.count(),
                 "Creating three recipes should result in three recipes in the database" );
+        
+        final Recipe r4 = new Recipe();
+	    r.setName("mocha");
+	    r.setPrice(9);
 
-        final Recipe r4 = createRecipe( "Hot Chocolate", 75, 0, 2, 1, 2 );
-
+	    r.addIngredient(milk, 2);
+	    r.addIngredient(sugar, 2);
+	    r.addIngredient(coffee, 2);
+	    r.addIngredient(chocolate, 2);
+	    
+	    //????
+	    service.save(r4);
         mvc.perform( post( "/api/v1/recipes" ).contentType( MediaType.APPLICATION_JSON )
                 .content( TestUtils.asJsonString( r4 ) ) ).andExpect( status().isInsufficientStorage() );
 
         Assertions.assertEquals( 3, service.count(), "Creating a fourth recipe should not get saved" );
     }
 
-    private Recipe createRecipe ( final String name, final Integer price, final Integer coffee, final Integer milk,
-            final Integer sugar, final Integer chocolate ) {
-        final Recipe recipe = new Recipe();
-        recipe.setName( name );
-        recipe.setPrice( price );
-        recipe.setCoffee( coffee );
-        recipe.setMilk( milk );
-        recipe.setSugar( sugar );
-        recipe.setChocolate( chocolate );
-
-        return recipe;
-    }
 
 }

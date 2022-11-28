@@ -95,29 +95,29 @@ public class APIIngredientController extends APIController {
 	        return new ResponseEntity( successResponse( name + " was deleted successfully" ), HttpStatus.OK );
 	    }
 	    
-	    @PutMapping (BASE_PATH + "/ingredients/{name}" )
-	    public ResponseEntity editIngredient ( @PathVariable final String name, final String newName) {
-	    	final Ingredient ingredient = service.findByName( name ); 
-	    	 if ( null == ingredient ) {
-		            return new ResponseEntity( errorResponse( "No ingredient found for name " + name ), HttpStatus.NOT_FOUND );
-		        }
-	    	 service.delete(ingredient); 
-	    	 ingredient.setName(newName); 
-	    	 service.save(ingredient);
-	    	 return new ResponseEntity( successResponse( name + " was edited successfully" ), HttpStatus.OK );	    	
-	    }
-	    
-	    @PutMapping (BASE_PATH + "/ingredients/{name}" )
-	    public ResponseEntity editIngredient ( @PathVariable final String name, final int newAmount) {
-	    	final Ingredient ingredient = service.findByName( name ); 
-	    	 if ( null == ingredient ) {
-		            return new ResponseEntity( errorResponse( "No ingredient found for name " + name ), HttpStatus.NOT_FOUND );
-		        }
-	    	 service.delete(ingredient); 
-	    	 ingredient.setAmount(newAmount); 
-	    	 service.save(ingredient);
-	    	 return new ResponseEntity( successResponse( name + " was edited successfully" ), HttpStatus.OK );	    	
-	    }
+//	    @PutMapping (BASE_PATH + "/ingredients/{name}" )
+//	    public ResponseEntity editIngredient ( @PathVariable final String name, final String newName) {
+//	    	final Ingredient ingredient = service.findByName( name ); 
+//	    	 if ( null == ingredient ) {
+//		            return new ResponseEntity( errorResponse( "No ingredient found for name " + name ), HttpStatus.NOT_FOUND );
+//		        }
+//	    	 service.delete(ingredient); 
+//	    	 ingredient.setName(newName); 
+//	    	 service.save(ingredient);
+//	    	 return new ResponseEntity( successResponse( name + " was edited successfully" ), HttpStatus.OK );	    	
+//	    }
+//	    
+//	    @PutMapping (BASE_PATH + "/ingredients/{name}" )
+//	    public ResponseEntity editIngredient ( @PathVariable final String name, final int newAmount) {
+//	    	final Ingredient ingredient = service.findByName( name ); 
+//	    	 if ( null == ingredient ) {
+//		            return new ResponseEntity( errorResponse( "No ingredient found for name " + name ), HttpStatus.NOT_FOUND );
+//		        }
+//	    	 service.delete(ingredient); 
+//	    	 ingredient.setAmount(newAmount); 
+//	    	 service.save(ingredient);
+//	    	 return new ResponseEntity( successResponse( name + " was edited successfully" ), HttpStatus.OK );	    	
+//	    }
 	    
 	    
 	    
