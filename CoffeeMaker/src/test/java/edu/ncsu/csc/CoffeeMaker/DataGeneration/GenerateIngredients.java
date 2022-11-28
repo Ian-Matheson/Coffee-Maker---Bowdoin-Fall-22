@@ -28,10 +28,15 @@ public class GenerateIngredients {
 
     @Autowired
     private IngredientService ingredientService;
+    
+    @Autowired
+    private RecipeService recipeService;
 
     @Test
     @Transactional
     public void testCreateIngredients() {
+    	recipeService.deleteAll();
+    	
         ingredientService.deleteAll();
     
         final Ingredient i1 = new Ingredient( "Coffee", 5 );

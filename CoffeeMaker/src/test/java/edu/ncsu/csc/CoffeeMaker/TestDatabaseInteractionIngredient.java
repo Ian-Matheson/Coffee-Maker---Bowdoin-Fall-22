@@ -44,7 +44,7 @@ public class TestDatabaseInteractionIngredient {
 	
 	@Test
 	@Transactional
-	public void testValidRecipes(){
+	public void testValidIngredients(){
 		
 	}
 	
