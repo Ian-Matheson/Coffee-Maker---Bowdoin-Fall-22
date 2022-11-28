@@ -44,6 +44,5 @@ public class GenerateIngredients {
         
         Assertions.assertEquals( 2, ingredientService.count() );
 
-        
     }
 }
