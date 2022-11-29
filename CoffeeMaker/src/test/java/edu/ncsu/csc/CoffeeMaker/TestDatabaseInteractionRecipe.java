@@ -43,6 +43,8 @@ public class TestDatabaseInteractionRecipe {
 	@BeforeEach
 	public void setUp() throws Exception {
 		recipeService.deleteAll();
+		inventoryService.deleteAll();
+
 		
 	}
 	

@@ -52,5 +52,30 @@ public class InventoryService extends Service<Inventory, Long> {
             return i;
         }
     }
+    
+    /**
+     * Saves the provided object into the database. If the object already
+     * exists, `save()` will perform an in-place update, overwriting the
+     * existing record.
+     *
+     * @param obj
+     *            The object to save into the database.
+     *            
+     *      @Override
+    public void save ( final Inventory i ) {
+    	//SAVE AND FLUSH
+    	final List<Inventory> inventoryList = findAll();
+    	if (inventoryList.size() >= 1) {
+    		throw new IllegalArgumentException();
+    	} else {
+    		getRepository().saveAndFlush( i );
+    	}
+    }
+      
+     *            
+     */
+    
+    
+    
 
 }

@@ -95,10 +95,10 @@ public class TestDatabaseInteractionIngredient {
 	    assertEquals(ing2.getName(), ingFBN.getName());
 	    assertEquals(ing2.getAmount(), ingFBN.getAmount());
 
-	    ingredientService.save(dbIngredient);
+	    //ingredientService.save(dbIngredient);
 	    
 	    
-        Ingredient ing3 = new Ingredient("Sugar", 300);
+        Ingredient ing3 = new Ingredient("Cream", 300);
         ingredientService.save(ing3);
 
 	    dbIngredients = (List<Ingredient>) ingredientService.findAll();
@@ -109,11 +109,11 @@ public class TestDatabaseInteractionIngredient {
 	    assertEquals(ing3.getAmount(), dbIngredient.getAmount());
 	    assertEquals(ing3.getId(), dbIngredient.getId());    
 	    
-	    ingFBN = ingredientService.findByName("Sugar");
-	    assertEquals(ing1.getName(), ingFBN.getName());
-	    assertEquals(ing1.getAmount(), ingFBN.getAmount());
+	    ingFBN = ingredientService.findByName("Cream");
+	    assertEquals(ing3.getName(), ingFBN.getName());
+	    assertEquals(ing3.getAmount(), ingFBN.getAmount());
 
-	    ingredientService.save(dbIngredient);
+	    //ingredientService.save(dbIngredient);
 	    
 	    
 	}
