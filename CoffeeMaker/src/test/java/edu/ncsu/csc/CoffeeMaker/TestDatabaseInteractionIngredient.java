@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,22 +14,29 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
 import edu.ncsu.csc.CoffeeMaker.models.Ingredient;
-import edu.ncsu.csc.CoffeeMaker.models.Recipe;
 import edu.ncsu.csc.CoffeeMaker.services.IngredientService;
 import edu.ncsu.csc.CoffeeMaker.services.RecipeService;
 
 
-
+/**
+ * 
+ * This class tests how the ingredient interacts with the database, ensuring changes that 
+ * are made to ingredients are properly reflected in the database too. Such changes include
+ * creating a new ingredient, altering the data within an ingredients, and deleting an ingredient.
+ * 
+ * @author IanMatheson
+ *
+ */
 @ExtendWith ( SpringExtension.class )
 @EnableAutoConfiguration
 @SpringBootTest ( classes = TestConfig.class )
-
-
 public class TestDatabaseInteractionIngredient {
 	
+	/** allows ingredients to be added to database */
 	@Autowired
 	private IngredientService ingredientService;
 	
+	/** allows recipes to be added to database*/
 	@Autowired
 	private RecipeService recipeService;
 	
@@ -44,6 +50,10 @@ public class TestDatabaseInteractionIngredient {
 		ingredientService.deleteAll();
 	}
 	
+	/**
+	 * This class tests how valid ingredients operations like add and edit
+	 *  interact with the database.
+	 */
 	@Test
 	@Transactional
 	public void testValidIngredients(){
@@ -118,6 +128,12 @@ public class TestDatabaseInteractionIngredient {
 	    
 	}
 	
+	/**
+	 * 
+	 * This class tests how valid ingredient operations which delete ingredients interact
+	 * with the database.
+	 * 
+	 */
 	@Test
 	@Transactional
 	public void testValidDeleteIngredients(){

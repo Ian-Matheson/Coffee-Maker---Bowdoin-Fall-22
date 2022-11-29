@@ -1,6 +1,5 @@
 package edu.ncsu.csc.CoffeeMaker.services;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -32,6 +31,7 @@ public class RecipeService extends Service<Recipe, Long> {
     @Autowired
     private RecipeRepository recipeRepository;
 
+	/** allows inventory to be added to database*/
 	@Autowired
 	private InventoryService inventoryService;
 	
@@ -56,16 +56,15 @@ public class RecipeService extends Service<Recipe, Long> {
      * exists, `save()` will perform an in-place update, overwriting the
      * existing record.
      *
-     * @param obj
-     *            The object to save into the database.
+     * @param recipe that we want to save
      */
     @Override
     public void save ( final Recipe recipe ) {
     	List<Ingredient> ivtIng = inventoryService.getInventory().getIngredients();
 
-    	for (int i=0; i < recipe.getIngredients().size(); i++) {
+    	for (int i = 0; i < recipe.getIngredients().size(); i++) {
         	boolean inInventory = false;
-    		for (int j=0; j < ivtIng.size(); j++) {
+    		for (int j = 0; j < ivtIng.size(); j++) {
     			if (ivtIng.get(j).getName().equals(recipe.getIngredients().get(i).getName())) {
     				inInventory = true;
     			}
@@ -93,8 +92,7 @@ public class RecipeService extends Service<Recipe, Long> {
      * database, but not from memory. Trying to save it again after deletion is
      * undefined behaviour. YMMV.
      *
-     * @param obj
-     *            The object to delete from the database.
+     * @param recipe to delete
      */
     @Override
     public void delete ( final Recipe recipe ) {

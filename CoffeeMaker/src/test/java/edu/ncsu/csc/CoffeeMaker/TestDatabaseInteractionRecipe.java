@@ -21,17 +21,27 @@ import edu.ncsu.csc.CoffeeMaker.services.InventoryService;
 import edu.ncsu.csc.CoffeeMaker.services.RecipeService;
 
 
-
+/**
+ * 
+ * This class tests how recipes interacts with the database, ensuring changes that 
+ * are made to recipes are properly reflected in the database too. Such changes include
+ * creating a new recipe, altering the data within a recipe, deleting a recipe, and updating
+ * a recipe. This class also ensures that the recipe characteristics are met such as having no more 
+ * than 3 recipes, no duplicate recipes, and no recipes without ingredients.
+ * 
+ * @author IanMatheson
+ *
+ */
 @ExtendWith ( SpringExtension.class )
 @EnableAutoConfiguration
 @SpringBootTest ( classes = TestConfig.class )
-
-
 public class TestDatabaseInteractionRecipe {
 	
+	/** allows recipes to be added to database*/
 	@Autowired
 	private RecipeService recipeService;
 	
+	/** allows inventory to be added to database*/
 	@Autowired
 	private InventoryService inventoryService;
 	
@@ -48,6 +58,12 @@ public class TestDatabaseInteractionRecipe {
 		
 	}
 	
+	/**
+	 * 
+	 * This class tests how valid recipes operations interacts with the database, 
+	 * ensuring changes that are made to recipes are properly reflected in the database too. 
+	 * Such changes tested include creating a new recipe and altering the data within a recipe. 
+	 */
 	@Test
 	@Transactional
 	public void testValidRecipes(){
@@ -133,6 +149,13 @@ public class TestDatabaseInteractionRecipe {
 	       
 	}
 	
+	/**
+	 * 
+	 * This class tests how valid recipes operations interacts with the database, 
+	 * ensuring changes that are made to recipes are properly reflected in the database too. 
+	 * Such changes tested include updating a recipe. 
+	 * 
+	 */
 	@Test
 	@Transactional
 	public void testValidRecipes2(){
@@ -226,6 +249,15 @@ public class TestDatabaseInteractionRecipe {
 	}
 	
 
+	/**
+	 * 
+	 * This class tests how invalid recipes operations interacts with the database, 
+	 * ensuring invalid changes are caught and not reflected in the database. 
+	 * Such changes tested include adding a duplicate recipe, adding more than 3 recipes,
+	 * adding an ingredient to a recipe that doesn't exist in the inventory, and creating
+	 * a recipe without any ingredients.
+	 *  
+	 */
  	@Test
 	@Transactional
 	public void testInvalidRecipes1(){
@@ -321,7 +353,7 @@ public class TestDatabaseInteractionRecipe {
 	    	
 		}
 	    
-	  //adding an ingredient to a recipe that isn't in inventory
+	  //adding an recipe with no ingredients
 	    try {
 		    Recipe r6 = new Recipe();
 		    r6.setName("Cappucino");
@@ -365,6 +397,13 @@ public class TestDatabaseInteractionRecipe {
 	    
 	}
 
+	/**
+	 * 
+	 * This class tests how invalid recipes operations interacts with the database, 
+	 * ensuring changes that are caught and not reflected in the database. 
+	 * Such changes tested include updating a valid recipe to one with an ingredient 
+	 * that doesn't exist in the inventory and without any ingredients.
+	 */
  	@Test
 	@Transactional
 	public void testInvalidRecipes2(){
@@ -434,6 +473,12 @@ public class TestDatabaseInteractionRecipe {
         }
 	}
 	
+	/**
+	 * 
+	 * This class tests how valid recipes operations interacts with the database, 
+	 * ensuring that changes are properly reflected in the database. 
+	 * Such changes tested include deleting a recipe.
+	 */
 	@Test
 	@Transactional
 	public void testValidDeleteRecipes(){
@@ -502,6 +547,14 @@ public class TestDatabaseInteractionRecipe {
 	}
 	
 
+	/**
+	 * 
+	 * This class tests how invalid recipes operations interacts with the database, 
+	 * ensuring changes that are caught and not reflected in the database. 
+	 * Such changes tested include deleting a recipe that doesn't exist or deleting all 
+	 * recipes when no recipes exist.
+	 * 
+	 */
 	@Test
 	@Transactional
 	public void testInvalidDeleteRecipes(){

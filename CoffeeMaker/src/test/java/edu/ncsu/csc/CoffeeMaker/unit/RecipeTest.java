@@ -29,6 +29,7 @@ import edu.ncsu.csc.CoffeeMaker.services.RecipeService;
 @SpringBootTest ( classes = TestConfig.class )
 public class RecipeTest {
 	
+	/** allows inventory to be added to database*/
 	@SuppressWarnings("unused")
 	private MockMvc mvc;
 
