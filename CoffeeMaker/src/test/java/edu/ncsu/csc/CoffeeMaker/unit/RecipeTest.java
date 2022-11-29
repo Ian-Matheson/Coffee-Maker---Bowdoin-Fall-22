@@ -503,7 +503,6 @@ public class RecipeTest {
     @Test
     @Transactional
     public void testUpdateRecipe () {
-    	//WHAT IF NEW RECIPE HAS DIFFERENT NUMBER OF PARAMETERS
     	Ingredient i1 =  new Ingredient("Sugar", 20);
     	Ingredient i2 =  new Ingredient("Milk", 50);
     	Ingredient i3 =  new Ingredient("Chocolate", 100);
@@ -587,9 +586,7 @@ public class RecipeTest {
     	String randomString = "aslkdfhalkfj"; 
     	Assertions.assertFalse(r.equals(randomString)); 
     	
-    	//AYO?
     	r.setName(randomString);
-//    	r.setName(null);
     	Recipe anotherRecipe = new Recipe(); 
     	Assertions.assertFalse(r.equals(anotherRecipe)); 
     	
