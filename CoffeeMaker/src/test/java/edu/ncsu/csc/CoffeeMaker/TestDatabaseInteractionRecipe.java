@@ -131,10 +131,102 @@ public class TestDatabaseInteractionRecipe {
 	       
 	}
 	
+	@Test
+	@Transactional
+	public void testValidRecipes2(){
+        
+        Inventory ivt = new Inventory();
+        
+        ivt.addIngredients("Coffee", 500);
+        ivt.addIngredients("Pumpkin Spice", 500);
+        ivt.addIngredients("Milk", 500);
+        ivt.addIngredients("Sugar", 500);
+        ivt.addIngredients("Marshmallow", 500);
+        
+        inventoryService.save(ivt);
+        
+        Ingredient ing1 = new Ingredient("Coffee", 500);
+        Ingredient ing2 = new Ingredient("Pumpkin Spice", 400);
+        Ingredient ing3 = new Ingredient("Milk", 300);
+        Ingredient ing4 = new Ingredient("Sugar", 200);
+        
+		Recipe r1 = new Recipe();
+	    
+	    r1.setName("mocha");
+	    r1.setPrice(50);
+        r1.addIngredient(ing1, 25);
+        r1.addIngredient(ing2, 20);
+        r1.addIngredient(ing3, 15);
+        r1.addIngredient(ing4, 10);
+        r1.setPrice( 5 );
+        
+	    recipeService.save( r1 );
+	    
+	    Recipe r2 = new Recipe();
+	    
+	    r2.setName("espresso");
+	    r2.setPrice(50);
+        r2.addIngredient(ing1, 10);
+        r2.addIngredient(ing2, 20);
+        r2.addIngredient(ing3, 15);
+        r2.addIngredient(ing4, 10);
+        
+        r1.updateRecipe(r2);
+        
+	    recipeService.save( r1 );
+	    
+	    List<Recipe> dbRecipes = (List<Recipe>) recipeService.findAll();
+
+	    assertEquals(1, dbRecipes.size());
+
+	    Recipe dbRecipe = dbRecipes.get(0);
+
+	    assertEquals(r2.getName(), dbRecipe.getName());
+	    assertEquals(r2.getPrice(), dbRecipe.getPrice());
+	    assertEquals(r2.getIngredients().get(0), dbRecipe.getIngredients().get(0));
+	    assertEquals(r2.getIngredients().get(1), dbRecipe.getIngredients().get(1));
+	    assertEquals(r2.getIngredients().get(2), dbRecipe.getIngredients().get(2));
+	    assertEquals(r2.getIngredients().get(3), dbRecipe.getIngredients().get(3));
+	    
+	    Recipe recipeBN = recipeService.findByName("espresso");
+	    assertEquals(r2.getName(), recipeBN.getName());
+	    
+        Ingredient ing5 = new Ingredient("Marshmallow", 200);
+        
+        Recipe r3 = new Recipe();
+	    
+	    r3.setName("Christmas Special");
+	    r3.setPrice(100);
+        r3.addIngredient(ing1, 10);
+        r3.addIngredient(ing2, 20);
+        r3.addIngredient(ing5, 15);
+        
+        r1.updateRecipe(r3);
+        
+	    recipeService.save( r1 );
+	    
+	    dbRecipes = (List<Recipe>) recipeService.findAll();
+
+	    assertEquals(1, dbRecipes.size());
+
+	    dbRecipe = dbRecipes.get(0);
+
+	    assertEquals(r3.getName(), dbRecipe.getName());
+	    assertEquals(r3.getPrice(), dbRecipe.getPrice());
+	    assertEquals(r3.getIngredients().get(0), dbRecipe.getIngredients().get(0));
+	    assertEquals(r3.getIngredients().get(1), dbRecipe.getIngredients().get(1));
+	    assertEquals(r3.getIngredients().get(2), dbRecipe.getIngredients().get(2));
+
+	    
+	    recipeBN = recipeService.findByName("Christmas Special");
+	    assertEquals(r3.getName(), recipeBN.getName());
+
+	}
+	
 
  	@Test
 	@Transactional
-	public void testInvalidRecipes(){
+	public void testInvalidRecipes1(){
 		
  		Inventory ivt = new Inventory();
         
@@ -160,7 +252,7 @@ public class TestDatabaseInteractionRecipe {
 	    recipeService.save( r1 );
 	    
 	    Recipe r2 = new Recipe();
-		r2.setName("latte");
+		r2.setName("lattee");
 	    r2.setPrice(50);
 	    r2.addIngredient(ing1, 3);
         r2.addIngredient(ing2, 1);
@@ -171,7 +263,7 @@ public class TestDatabaseInteractionRecipe {
 	    //testing setting a duplicate recipe
 	    try {
 	    	Recipe r3 = new Recipe();
-			r3.setName("latte");
+			r3.setName("lattee");
 		    r3.setPrice(50);
 		    r3.addIngredient(ing1, 3);
 	        r3.addIngredient(ing2, 1);
@@ -227,6 +319,19 @@ public class TestDatabaseInteractionRecipe {
 	    	
 		}
 	    
+	  //adding an ingredient to a recipe that isn't in inventory
+	    try {
+		    Recipe r6 = new Recipe();
+		    r6.setName("Cappucino");
+		    r6.setPrice(100);
+		    recipeService.save(r6);
+		    Assertions.fail("Cannot have a recipe with no ingredients");
+	    }
+	    catch (IllegalArgumentException iae) {
+			Assertions.assertEquals(0, recipeService.count());
+	    	
+		}
+	    
 	    Recipe r = new Recipe(); 
 	    
 		try {
@@ -258,7 +363,74 @@ public class TestDatabaseInteractionRecipe {
 	    
 	}
 
-	
+ 	@Test
+	@Transactional
+	public void testInvalidRecipes2(){
+        
+        Inventory ivt = new Inventory();
+        
+        ivt.addIngredients("Coffee", 500);
+        ivt.addIngredients("Pumpkin Spice", 500);
+        ivt.addIngredients("Milk", 500);
+        ivt.addIngredients("Sugar", 500);
+        
+        inventoryService.save(ivt);
+        
+        Ingredient ing1 = new Ingredient("Coffee", 500);
+        Ingredient ing2 = new Ingredient("Pumpkin Spice", 400);
+        Ingredient ing3 = new Ingredient("Milk", 300);
+        Ingredient ing4 = new Ingredient("Sugar", 200);
+        
+		Recipe r1 = new Recipe();
+	    
+	    r1.setName("mocha");
+	    r1.setPrice(50);
+        r1.addIngredient(ing1, 25);
+        r1.addIngredient(ing2, 20);
+        r1.addIngredient(ing3, 15);
+        r1.addIngredient(ing4, 10);
+        r1.setPrice( 5 );
+        
+	    recipeService.save( r1 );
+	    
+	    //updating a recipe to one with an ingredient not in inventory
+	    try {
+	    	Ingredient ing5 = new Ingredient("Marshmallow", 200);
+	        
+		    Recipe r2 = new Recipe();
+		    
+		    r2.setName("Christmas Special");
+		    r2.setPrice(50);
+	        r2.addIngredient(ing1, 10);
+	        r2.addIngredient(ing2, 20);
+	        r2.addIngredient(ing3, 15);
+	        r2.addIngredient(ing5, 10);
+	        
+	        r1.updateRecipe(r2);
+	        
+		    recipeService.save( r1 );
+		    Assertions.fail("Cannot have a recipe with ingredients not in inventory");
+	    }
+        catch (IllegalArgumentException iae) {
+        	//Exception caught, carry on
+        }
+	    
+	  //updating a recipe to one with no ingredients
+	    try {
+		    Recipe r3 = new Recipe();
+		    
+		    r3.setName("water");
+		    r3.setPrice(50);
+	        
+	        r1.updateRecipe(r3);
+	        
+		    recipeService.save( r1 );
+		    Assertions.fail("Cannot have a recipe with no ingredients");
+	    }
+        catch (IllegalArgumentException iae) {
+        	//Exception caught, carry on
+        }
+	}
 	
 	@Test
 	@Transactional
@@ -387,12 +559,5 @@ public class TestDatabaseInteractionRecipe {
 	    	Assertions.assertEquals( 0, recipeService.count() );
 		}
 	}
-	
-	//UPDATE RECIPE
-	//EDIT INGREDIENT
-	
-	
-	//Adding ingredient to recipe doesnt change db in inventory
-	//Adding an ingredient to recipe that isn't in inventory
-	
+
 }

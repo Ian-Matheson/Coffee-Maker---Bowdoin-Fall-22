@@ -74,8 +74,10 @@ public class RecipeService extends Service<Recipe, Long> {
         		throw new IllegalArgumentException();
         	}
     	}
-    	
-    	if (findByName(recipe.getName()) == null && count() < 3) {
+    	if (recipe.getIngredients().isEmpty()) {
+    		throw new IllegalArgumentException();
+    	}
+    	else if (findByName(recipe.getName()) == null && count() < 3) {
     		super.save(recipe);
     	}
     	else if (findByName(recipe.getName()) != null && recipe.getId() == findByName(recipe.getName()).getId()) {
