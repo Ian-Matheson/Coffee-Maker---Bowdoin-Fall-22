@@ -1,11 +1,15 @@
 package edu.ncsu.csc.CoffeeMaker.services;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Component;
 
+import edu.ncsu.csc.CoffeeMaker.models.Ingredient;
 import edu.ncsu.csc.CoffeeMaker.models.Recipe;
 import edu.ncsu.csc.CoffeeMaker.repositories.RecipeRepository;
 
@@ -28,6 +32,9 @@ public class RecipeService extends Service<Recipe, Long> {
     @Autowired
     private RecipeRepository recipeRepository;
 
+	@Autowired
+	private InventoryService inventoryService;
+	
     @Override
     protected JpaRepository getRepository () {
         return recipeRepository;
@@ -54,13 +61,25 @@ public class RecipeService extends Service<Recipe, Long> {
      */
     @Override
     public void save ( final Recipe recipe ) {
+    	List<Ingredient> ivtIng = inventoryService.getInventory().getIngredients();
+
+    	for (int i=0; i < recipe.getIngredients().size(); i++) {
+        	boolean inInventory = false;
+    		for (int j=0; j < ivtIng.size(); j++) {
+    			if (ivtIng.get(j).getName().equals(recipe.getIngredients().get(i).getName())) {
+    				inInventory = true;
+    			}
+    		}
+    		if (!inInventory) {
+        		throw new IllegalArgumentException();
+        	}
+    	}
+    	
     	if (findByName(recipe.getName()) == null && count() < 3) {
     		super.save(recipe);
-    		//getRepository().saveAndFlush( recipe );
     	}
     	else if (findByName(recipe.getName()) != null && recipe.getId() == findByName(recipe.getName()).getId()) {
     		super.save(recipe);
-    		//getRepository().saveAndFlush( recipe );
     	}
     	else {
     		throw new IllegalArgumentException();
@@ -80,7 +99,7 @@ public class RecipeService extends Service<Recipe, Long> {
     	if (findByName(recipe.getName()) == null) {
     		throw new IllegalArgumentException();
     	}
-        getRepository().delete( recipe );
+    	super.delete(recipe);
     }
 
 }

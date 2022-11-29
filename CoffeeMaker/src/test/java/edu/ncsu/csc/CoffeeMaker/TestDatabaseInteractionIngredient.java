@@ -31,6 +31,8 @@ public class TestDatabaseInteractionIngredient {
 	@Autowired
 	private IngredientService ingredientService;
 	
+	@Autowired
+	private RecipeService recipeService;
 	
 	/**
 	 * BeforeEach clears the current Recipe Service.
@@ -38,15 +40,87 @@ public class TestDatabaseInteractionIngredient {
 	 */
 	@BeforeEach
 	public void setUp() throws Exception {
+		recipeService.deleteAll();
 		ingredientService.deleteAll();
-		
 	}
 	
 	@Test
 	@Transactional
 	public void testValidIngredients(){
-		
+
+        Ingredient ing1 = new Ingredient("Coffee", 500);
+        ingredientService.save(ing1);
+
+	    List<Ingredient> dbIngredients = (List<Ingredient>) ingredientService.findAll();
+	    assertEquals(1, dbIngredients.size());
+	    Ingredient dbIngredient = dbIngredients.get(0);
+
+	    assertEquals(ing1.getName(), dbIngredient.getName());
+	    assertEquals(ing1.getAmount(), dbIngredient.getAmount());
+	    assertEquals(ing1.getId(), dbIngredient.getId());    
+	    
+	    Ingredient ingFBN = ingredientService.findByName("Coffee");
+	    assertEquals(ing1.getName(), ingFBN.getName());
+	    assertEquals(ing1.getAmount(), ingFBN.getAmount());
+	    
+	    dbIngredient.setName("Sugar");
+	    dbIngredient.setAmount(300);
+
+	    ingredientService.save(dbIngredient);
+	    
+	    dbIngredients = (List<Ingredient>) ingredientService.findAll();
+	    assertEquals(1, dbIngredients.size());
+	    dbIngredient = dbIngredients.get(0);
+
+        assertEquals( 1, ingredientService.count() );
+
+        assertEquals( 300, (int) ( (Ingredient) ingredientService.findAll().get( 0 ) ).getAmount() );
+        
+        assertEquals("Sugar", dbIngredient.getName());
+        assertEquals(300, dbIngredient.getAmount());  
 	}
 	
+	@Test
+	@Transactional
+	public void testValidDeleteIngredients(){
 
+        Ingredient ing1 = new Ingredient("Coffee", 500);
+        
+        ingredientService.save(ing1);
+        
+        Ingredient ing2 = new Ingredient("Milk", 400);
+        
+        ingredientService.save(ing2);
+
+	    List<Ingredient> dbIngredients = (List<Ingredient>) ingredientService.findAll();
+	    assertEquals(2, dbIngredients.size());
+	    
+	    Ingredient dbIngredient1 = dbIngredients.get(0);
+	    assertEquals(ing1.getName(), dbIngredient1.getName());
+	    assertEquals(ing1.getAmount(), dbIngredient1.getAmount());
+	    assertEquals(ing1.getId(), dbIngredient1.getId());
+	    
+	    Ingredient dbIngredient2 = dbIngredients.get(1);
+	    assertEquals(ing2.getName(), dbIngredient2.getName());
+	    assertEquals(ing2.getAmount(), dbIngredient2.getAmount());
+	    assertEquals(ing2.getId(), dbIngredient2.getId());
+	    
+	    ingredientService.delete(dbIngredient1);
+	    
+	    dbIngredients = (List<Ingredient>) ingredientService.findAll();
+	    assertEquals(1, dbIngredients.size());
+
+	    dbIngredient1 = dbIngredients.get(0);
+
+	    assertEquals(ing2.getName(), dbIngredient1.getName());
+	    assertEquals(ing2.getAmount(), dbIngredient1.getAmount());
+	    assertEquals(ing2.getId(), dbIngredient1.getId());
+
+	    ingredientService.delete(dbIngredient1);
+	    
+	    dbIngredients = (List<Ingredient>) ingredientService.findAll();
+	    
+	    assertEquals(0, dbIngredients.size());
+	}
+	//MULTIPLE INGREDIENTS WITH THE SAME NAME
 }

@@ -15,7 +15,9 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
 import edu.ncsu.csc.CoffeeMaker.models.Ingredient;
+import edu.ncsu.csc.CoffeeMaker.models.Inventory;
 import edu.ncsu.csc.CoffeeMaker.models.Recipe;
+import edu.ncsu.csc.CoffeeMaker.services.InventoryService;
 import edu.ncsu.csc.CoffeeMaker.services.RecipeService;
 
 
@@ -29,6 +31,9 @@ public class TestDatabaseInteractionRecipe {
 	
 	@Autowired
 	private RecipeService recipeService;
+	
+	@Autowired
+	private InventoryService inventoryService;
 	
 	
 	/**
@@ -44,23 +49,43 @@ public class TestDatabaseInteractionRecipe {
 	@Test
 	@Transactional
 	public void testValidRecipes(){
-		
-		Recipe r = new Recipe();
-	    
-	    r.setName("mocha");
-	    r.setPrice(50);
-	    
+        
+        Inventory ivt = new Inventory();
+        
+        ivt.addIngredients("Coffee", 500);
+        ivt.addIngredients("Pumpkin Spice", 500);
+        ivt.addIngredients("Milk", 500);
+        ivt.addIngredients("Sugar", 500);
+        
+        inventoryService.save(ivt);
+        
         Ingredient ing1 = new Ingredient("Coffee", 500);
         Ingredient ing2 = new Ingredient("Pumpkin Spice", 400);
         Ingredient ing3 = new Ingredient("Milk", 300);
         Ingredient ing4 = new Ingredient("Sugar", 200);
         
+		Recipe r = new Recipe();
+	    
+	    r.setName("mocha");
+	    r.setPrice(50);
         r.addIngredient(ing1, 25);
         r.addIngredient(ing2, 20);
         r.addIngredient(ing3, 15);
         r.addIngredient(ing4, 10);
         r.setPrice( 5 );
+        
 	    recipeService.save( r );
+	    
+	    //ensuring that adding an ingredient count in recipe doesn't effect inventory
+	    inventoryService.save(ivt);
+	    Assertions.assertEquals("Coffee", ivt.getIngredients().get(0).getName()); 
+	    Assertions.assertEquals(500, ivt.getIngredients().get(0).getAmount()); 
+	    Assertions.assertEquals("Pumpkin Spice", ivt.getIngredients().get(1).getName()); 
+	    Assertions.assertEquals(500, ivt.getIngredients().get(1).getAmount()); 
+	    Assertions.assertEquals("Milk", ivt.getIngredients().get(2).getName()); 
+	    Assertions.assertEquals(500, ivt.getIngredients().get(2).getAmount()); 
+	    Assertions.assertEquals("Sugar", ivt.getIngredients().get(3).getName()); 
+	    Assertions.assertEquals(500, ivt.getIngredients().get(3).getAmount()); 
 		
 	    List<Recipe> dbRecipes = (List<Recipe>) recipeService.findAll();
 
@@ -75,7 +100,6 @@ public class TestDatabaseInteractionRecipe {
 	    assertEquals(r.getIngredients().get(2), dbRecipe.getIngredients().get(2));
 	    assertEquals(r.getIngredients().get(3), dbRecipe.getIngredients().get(3));
 	    
-	    
 	    Recipe recipeBN = recipeService.findByName("mocha");
 	    assertEquals(r.getName(), recipeBN.getName());
 	    
@@ -86,11 +110,20 @@ public class TestDatabaseInteractionRecipe {
 	    dbRecipe.editIngredient(ing4, 2);
 
 	    recipeService.save(dbRecipe);
+	    
+	    //ensuring that editing an ingredient count in recipe doesn't effect inventory
+	    inventoryService.save(ivt);
+	    Assertions.assertEquals("Coffee", ivt.getIngredients().get(0).getName()); 
+	    Assertions.assertEquals(500, ivt.getIngredients().get(0).getAmount()); 
+	    Assertions.assertEquals("Pumpkin Spice", ivt.getIngredients().get(1).getName()); 
+	    Assertions.assertEquals(500, ivt.getIngredients().get(1).getAmount()); 
+	    Assertions.assertEquals("Milk", ivt.getIngredients().get(2).getName()); 
+	    Assertions.assertEquals(500, ivt.getIngredients().get(2).getAmount()); 
+	    Assertions.assertEquals("Sugar", ivt.getIngredients().get(3).getName()); 
+	    Assertions.assertEquals(500, ivt.getIngredients().get(3).getAmount()); 
 
         assertEquals( 1, recipeService.count() );
-
         assertEquals( 15, (int) ( (Recipe) recipeService.findAll().get( 0 ) ).getPrice() );
-        
         assertEquals(12, dbRecipe.getIngredients().get(0).getAmount());
         assertEquals(8, dbRecipe.getIngredients().get(1).getAmount());
         assertEquals(4, dbRecipe.getIngredients().get(2).getAmount());
@@ -103,6 +136,15 @@ public class TestDatabaseInteractionRecipe {
 	@Transactional
 	public void testInvalidRecipes(){
 		
+ 		Inventory ivt = new Inventory();
+        
+        ivt.addIngredients("Coffee", 500);
+        ivt.addIngredients("Pumpkin Spice", 500);
+        ivt.addIngredients("Milk", 500);
+        ivt.addIngredients("Sugar", 500);
+        
+        inventoryService.save(ivt);
+        
 	    Ingredient ing1 = new Ingredient("Coffee", 500);
         Ingredient ing2 = new Ingredient("Pumpkin Spice", 400);
         Ingredient ing3 = new Ingredient("Milk", 300);
@@ -166,25 +208,40 @@ public class TestDatabaseInteractionRecipe {
 		}
 	    
 	    recipeService.deleteAll();
+
+	    //adding an ingredient to a recipe that isn't in inventory
+	    try {
+		    Ingredient ing5 = new Ingredient("Marshmallow", 200);	//not in inventory
+		    Recipe r5 = new Recipe();
+		    r5.setName("Christmas Special");
+		    r5.setPrice(100);
+		    r5.addIngredient(ing1, 5);
+		    r5.addIngredient(ing2, 5);
+		    r5.addIngredient(ing3, 5);
+		    r5.addIngredient(ing5, 5);
+		    recipeService.save(r5);
+		    Assertions.fail("Cannot save a recipe that has an ingredient that isn't in inventory");
+	    }
+	    catch (IllegalArgumentException iae) {
+			Assertions.assertEquals(0, recipeService.count());
+	    	
+		}
 	    
-	    Recipe r = new Recipe();
+	    Recipe r = new Recipe(); 
 	    
-		//testing setName
 		try {
 			r.setName(null);
 			Assertions.fail("Setting name to null should throw iae but did not");
 		} catch (IllegalArgumentException iae) {
 			//Exception caught, carry on
 		}
-		
 		try {
 			r.setName("");
 			Assertions.fail("Setting name to empty string should throw iae but did not");
 		} catch (IllegalArgumentException iae) {
 			//Exception caught, carry on
 		}
-	
-		//testing set price
+		
 	    try {
 	    	r.setPrice(-1);
 	    	Assertions.fail("Setting price to a negative number should throw iae but did not");
@@ -192,7 +249,6 @@ public class TestDatabaseInteractionRecipe {
 			//Exception caught, carry on
 		}
 	    
-	    //testing set milk
 	    try {
 	    	r.addIngredient(ing1, -1);
 	    	Assertions.fail("Setting milk to a negative number should throw iae but did not");
@@ -207,13 +263,22 @@ public class TestDatabaseInteractionRecipe {
 	@Test
 	@Transactional
 	public void testValidDeleteRecipes(){
-		
-		Recipe r = new Recipe();
 	    
+	    Inventory ivt = new Inventory();
+	    
+	    ivt.addIngredients("Milk", 500);
+	    ivt.addIngredients("Sugar", 500);
+	    ivt.addIngredients("Coffee", 500);
+	    ivt.addIngredients("Chocolate", 500);
+	    
+	    inventoryService.save(ivt);
+	    
+		Recipe r = new Recipe();
+		
 	    Ingredient ing1 = new Ingredient("Milk", 500);
-	    Ingredient ing2 = new Ingredient("Sugar", 400);
-	    Ingredient ing3 = new Ingredient("Coffee", 300);
-	    Ingredient ing4 = new Ingredient("Chocolate", 200);
+	    Ingredient ing2 = new Ingredient("Sugar", 500);
+	    Ingredient ing3 = new Ingredient("Coffee", 500);
+	    Ingredient ing4 = new Ingredient("Chocolate", 500);
 	    
 	    r.setName("mocha");
 	    r.setPrice(50);
@@ -260,7 +325,6 @@ public class TestDatabaseInteractionRecipe {
 	    List<Recipe> dbRecipes3 = (List<Recipe>) recipeService.findAll();
 	    
 	    assertEquals(0, dbRecipes3.size());
-
 	}
 	
 
@@ -268,6 +332,15 @@ public class TestDatabaseInteractionRecipe {
 	@Transactional
 	public void testInvalidDeleteRecipes(){
 
+		Inventory ivt = new Inventory();
+        
+        ivt.addIngredients("Coffee", 500);
+        ivt.addIngredients("Chocolate", 500);
+        ivt.addIngredients("Milk", 500);
+        ivt.addIngredients("Sugar", 500);
+        
+        inventoryService.save(ivt);
+        
 	    Ingredient ing1 = new Ingredient("Milk", 500);
 	    Ingredient ing2 = new Ingredient("Sugar", 400);
 	    Ingredient ing3 = new Ingredient("Coffee", 300);
@@ -317,5 +390,9 @@ public class TestDatabaseInteractionRecipe {
 	
 	//UPDATE RECIPE
 	//EDIT INGREDIENT
+	
+	
+	//Adding ingredient to recipe doesnt change db in inventory
+	//Adding an ingredient to recipe that isn't in inventory
 	
 }
