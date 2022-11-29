@@ -96,7 +96,7 @@ public class APIRecipeController extends APIController {
         	}
         }
         if ( service.findAll().size() == 3 ) {
-        	return new ResponseEntity( errorResponse(  "There are already three created ingredients" ),
+        	return new ResponseEntity( errorResponse(  "There are already three created recipes" ),
                     HttpStatus.CONFLICT );
         }
         

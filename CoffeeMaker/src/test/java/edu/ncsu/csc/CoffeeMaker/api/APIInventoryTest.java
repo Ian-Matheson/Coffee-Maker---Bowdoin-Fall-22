@@ -1,6 +1,7 @@
 package edu.ncsu.csc.CoffeeMaker.api;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -57,7 +58,7 @@ public class APIInventoryTest {
 		inventory.addIngredients("milk", 5);
 		
 		String inventoryString = mvc.perform( get( ( "/api/v1/inventory") ).contentType( MediaType.APPLICATION_JSON )
-                .content( TestUtils.asJsonString( milk ) ) ).andExpect( status().isOk() );
+                .content( TestUtils.asJsonString( milk ) ) ).andExpect( status().isOk() ).andReturn().getResponse().getContentAsString();
 		
 		Assertions.assertTrue(inventoryString.contains("milk")); 
 	}
@@ -72,23 +73,22 @@ public class APIInventoryTest {
 		Ingredient milk = new Ingredient("milk", 5); 
 		inventory.addIngredients("milk", 5);
 		
-		mvc.perform( put( "/api/v1/inventory") ).contentType( MediaType.APPLICATION_JSON )
-                .content( TestUtils.asJsonString( milk ) ) .andExpect( status().isOk() );
-		String inventoryString = mvc.perform( get( ( "/api/v1/inventory") ).contentType( MediaType.APPLICATION_JSON )
+		mvc.perform( put( String.format( "/api/v1/inventory") ).contentType( MediaType.APPLICATION_JSON )
                 .content( TestUtils.asJsonString( milk ) ) ).andExpect( status().isOk() );
+		String inventoryString = mvc.perform( get( ( "/api/v1/inventory") ).contentType( MediaType.APPLICATION_JSON )
+                .content( TestUtils.asJsonString( milk ) ) ).andExpect( status().isOk() ).andReturn().getResponse().getContentAsString();
 		
 		Assertions.assertTrue(inventoryString.contains("milk"));
 		
 		Ingredient sauce = new Ingredient("sauce", -1); 
 		inventory.addIngredients("sauce", -1);
 		
-		mvc.perform( put( "/api/v1/inventory") ).contentType( MediaType.APPLICATION_JSON )
-        .content( TestUtils.asJsonString( milk ) ) .andExpect( status().isOk() );
-		inventoryString = mvc.perform( get( ( "/api/v1/inventory") ).contentType( MediaType.APPLICATION_JSON )
+		mvc.perform( put( String.format("/api/v1/inventory") ).contentType( MediaType.APPLICATION_JSON )
         .content( TestUtils.asJsonString( milk ) ) ).andExpect( status().isOk() );
+		inventoryString = mvc.perform( get( ( "/api/v1/inventory") ).contentType( MediaType.APPLICATION_JSON )
+        .content( TestUtils.asJsonString( milk ) ) ).andExpect( status().isOk() ).andReturn().getResponse().getContentAsString();
 
 		Assertions.assertFalse(inventoryString.contains("sauce"));
-		
 		
 	}
 	
