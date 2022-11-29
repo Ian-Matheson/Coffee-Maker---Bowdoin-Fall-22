@@ -66,10 +66,6 @@ public class APIIngredientController extends APIController {
 	            return new ResponseEntity( errorResponse( "Ingredient with the name " + ingredient.getName() + " already exists" ),
 	                    HttpStatus.CONFLICT );
 	        }
-	        if ( ingredient.getAmount() <= 0  ) {
-	        	return new ResponseEntity( errorResponse( "Amount of " + ingredient.getAmount() + "is not a positive integer" ),
-	                    HttpStatus.CONFLICT );
-	        }
         		service.save( ingredient );
 	            return new ResponseEntity(successResponse( ingredient.getName() + " successfully created" ), HttpStatus.OK );
 	    }
