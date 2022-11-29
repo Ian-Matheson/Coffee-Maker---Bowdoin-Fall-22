@@ -34,8 +34,8 @@ public class IngredientService extends Service<Ingredient, Long> {
      * Find an ingredient with the provided name
      * 
      * @param name
-     *            Name of the recipe to find
-     * @return found recipe, null if none
+     *            Name of the ingredient to find
+     * @return found ingredient, null if none
      */
     public Ingredient findByName ( final String name ) {
         return ingredientRepository.findByName( name );

@@ -78,6 +78,44 @@ public class TestDatabaseInteractionIngredient {
         
         assertEquals("Sugar", dbIngredient.getName());
         assertEquals(300, dbIngredient.getAmount());  
+        
+        
+        Ingredient ing2 = new Ingredient("Milk", 500);
+        ingredientService.save(ing2);
+
+	    dbIngredients = (List<Ingredient>) ingredientService.findAll();
+	    assertEquals(2, dbIngredients.size());
+	    dbIngredient = dbIngredients.get(1);
+
+	    assertEquals(ing2.getName(), dbIngredient.getName());
+	    assertEquals(ing2.getAmount(), dbIngredient.getAmount());
+	    assertEquals(ing2.getId(), dbIngredient.getId());    
+	    
+	    ingFBN = ingredientService.findByName("Milk");
+	    assertEquals(ing2.getName(), ingFBN.getName());
+	    assertEquals(ing2.getAmount(), ingFBN.getAmount());
+
+	    ingredientService.save(dbIngredient);
+	    
+	    
+        Ingredient ing3 = new Ingredient("Sugar", 300);
+        ingredientService.save(ing3);
+
+	    dbIngredients = (List<Ingredient>) ingredientService.findAll();
+	    assertEquals(3, dbIngredients.size());
+	    dbIngredient = dbIngredients.get(2);
+
+	    assertEquals(ing3.getName(), dbIngredient.getName());
+	    assertEquals(ing3.getAmount(), dbIngredient.getAmount());
+	    assertEquals(ing3.getId(), dbIngredient.getId());    
+	    
+	    ingFBN = ingredientService.findByName("Sugar");
+	    assertEquals(ing1.getName(), ingFBN.getName());
+	    assertEquals(ing1.getAmount(), ingFBN.getAmount());
+
+	    ingredientService.save(dbIngredient);
+	    
+	    
 	}
 	
 	@Test
