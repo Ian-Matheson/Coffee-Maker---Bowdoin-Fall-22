@@ -58,12 +58,10 @@ public class APIInventoryTest {
 		Inventory inventory = new Inventory(); 
 		Ingredient milk = new Ingredient("milk", 5); 
 		inventory.addIngredients("milk", 5);
+		mvc.perform( get( ( "/api/v1/inventory") ).contentType( MediaType.APPLICATION_JSON )
+                .content( TestUtils.asJsonString( milk ) ) ).andExpect( status().isOk() );
 	
-		
-		String inventoryString = mvc.perform( get( ( "/api/v1/inventory") ).contentType( MediaType.APPLICATION_JSON )
-                .content( TestUtils.asJsonString( milk ) ) ).andExpect( status().isOk() ).andReturn().getResponse().getContentAsString();
 	
-		//Assertions.assertTrue(inventoryString.contains("milk")); 
 	}
 	
 	@Test
