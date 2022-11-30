@@ -16,6 +16,7 @@ import javax.transaction.Transactional;
 //Eclipse reccommend adding these, not sure if I was supposed too? (William) 
 import org.junit.Before;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.invocation.MockHandler;
@@ -35,6 +36,7 @@ import edu.ncsu.csc.CoffeeMaker.models.Ingredient;
 import edu.ncsu.csc.CoffeeMaker.models.Inventory;
 import edu.ncsu.csc.CoffeeMaker.models.Recipe;
 import edu.ncsu.csc.CoffeeMaker.repositories.InventoryRepository;
+import edu.ncsu.csc.CoffeeMaker.services.IngredientService;
 import edu.ncsu.csc.CoffeeMaker.services.InventoryService;
 import edu.ncsu.csc.CoffeeMaker.services.RecipeService;
 import net.bytebuddy.dynamic.scaffold.MethodRegistry.Handler.ForAbstractMethod;
@@ -59,6 +61,13 @@ public class APITest {
 	
 	@Autowired
  	private RecipeService recipeService;
+	
+	@Autowired
+ 	private IngredientService ingredientService;
+	
+	@Autowired
+ 	private InventoryService inventoryService;
+	
 
 	/**
 	 * Sets up the tests.
@@ -67,6 +76,13 @@ public class APITest {
 	public void setup () {
 	    mvc = MockMvcBuilders.webAppContextSetup( context ).build();
 	}
+	
+	@BeforeEach
+    public void setup2 () {
+    	recipeService.deleteAll();
+    	ingredientService.deleteAll();
+    	inventoryService.deleteAll();
+    }
 	
 	/**
 	 * Test Method for the rest API, getting recipes, adding inventory, and making coffee
@@ -83,6 +99,13 @@ public class APITest {
 		String recipe = mvc.perform( get( "/api/v1/recipes" ) ).andDo( print() ).andExpect( status().isOk() )
 			    .andReturn().getResponse().getContentAsString();
 		
+		Inventory ivt = new Inventory();
+		ivt.addIngredients("milk", 500);
+		ivt.addIngredients("sugar", 500);
+		ivt.addIngredients("coffee", 500);
+		ivt.addIngredients("chocolate", 500);
+		
+		inventoryService.save(ivt);
 		//Creating an Object for Testing
 		if (!recipe.contains("Mocha")) {
 			Recipe r = new Recipe();
@@ -120,8 +143,6 @@ public class APITest {
 	 	   assertTrue(products.getIngredients().get(1).getAmount() == 2);
 	 	   assertTrue(products.getIngredients().get(2).getAmount() == 2);
 	 	   assertTrue(products.getIngredients().get(3).getAmount() == 2);
-	 	   
-	 	   //ask about how to test these things! #FIXME
 	 	   
 	 	   //Team Task - Make Coffee!
 	 	   mvc.perform( post( "/api/v1/makecoffee/mocha" ).contentType( MediaType.APPLICATION_JSON )

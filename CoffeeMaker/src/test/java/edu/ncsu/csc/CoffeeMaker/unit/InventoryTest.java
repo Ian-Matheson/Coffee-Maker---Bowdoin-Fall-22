@@ -247,6 +247,7 @@ public class InventoryTest {
         catch ( final IllegalArgumentException iae ) {
         	//Exception caught, carry on
         }
+
     }
     
     @Test
