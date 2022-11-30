@@ -7,10 +7,11 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.util.List;
+import java.io.UnsupportedEncodingException;
 
 import javax.transaction.Transactional;
 
@@ -18,27 +19,23 @@ import org.junit.Before;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import edu.ncsu.csc.CoffeeMaker.common.TestUtils;
 import edu.ncsu.csc.CoffeeMaker.models.Ingredient;
-import edu.ncsu.csc.CoffeeMaker.models.Inventory;
-import edu.ncsu.csc.CoffeeMaker.models.Recipe;
 import edu.ncsu.csc.CoffeeMaker.services.IngredientService;
-import edu.ncsu.csc.CoffeeMaker.services.InventoryService;
 import edu.ncsu.csc.CoffeeMaker.services.RecipeService;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
-
+/**
+ * Rest API Tests for the API Ingredient Controller class. 
+ * 
+ * @author srutman
+ *
+ */
 @SpringBootTest
 @AutoConfigureMockMvc
 @ExtendWith ( SpringExtension.class )
@@ -64,6 +61,13 @@ public class APIIngredientTest {
 		    mvc = MockMvcBuilders.webAppContextSetup( context ).build();
 		}
 		
+		/**
+		 * Test Method for the rest API, getting ingredients from the Ingredients table, 
+		 * and creating new ingredients and putting them in the Ingredients table. 
+		 * 
+		 * @throws Exception 
+		 * @throws UnsupportedEncodingException 
+		 */
 		@Test 
 		@Transactional
 		public void getAndCreateIngredientTest() throws Exception {
@@ -79,34 +83,27 @@ public class APIIngredientTest {
 			
 			
 			//assert milk was added 
-			Assertions.assertTrue(service.count() == 1); 
+			Assertions.assertTrue(service.count() == 1); 		
 
 			
-			Ingredient sugarIngredient = new Ingredient("sugar", -4); 
-			System.out.println("Sugar" + sugarIngredient); 
-			mvc.perform( post( "/api/v1/ingredients" ).contentType( MediaType.APPLICATION_JSON )
-		 	            .content( TestUtils.asJsonString( sugarIngredient ) ) ).andExpect( status().isConflict() );
 			
-			//assert sugar was not added
-			Assertions.assertTrue(service.count() == 1); 
-			
-
-
-			String milkString = mvc.perform( get( "/api/v1/ingredients/milk" ) ).andDo( print() ).andExpect( status().isOk() )
+			mvc.perform( get( "/api/v1/ingredients/milk" ) ).andDo( print() ).andExpect( status().isOk() )
 				    .andReturn().getResponse().getContentAsString();
-			
-			Assertions.assertTrue(milkString.contains("milk")); 
-			
+						
 			//cannot get ingredients that do not exist
-			String failure =  mvc.perform( get( "/api/v1/ingredients/chocolate" ) ).andDo( print() ).andExpect( status().isOk() )
-				    .andReturn().getResponse().getContentAsString();
+			mvc.perform( get( "/api/v1/ingredients/chocolate" ) ).andDo( print() ).andExpect( status().isNotFound() )
+				   .andReturn().getResponse().getContentAsString();
 			
-			System.out.println(failure); 
-			Assertions.assertEquals(failure, null, "Should have brough tup an error response"); 
-			//???
-			List<String> allIngredients =  (List<String>) mvc.perform( get( "/api/v1/ingredients" ) ).andDo( print() ).andExpect( status().isOk() );
+			mvc.perform( get( "/api/v1/ingredients" ) ).andDo( print() ).andExpect( status().isOk() );
 		}
 		
+		/**
+		 * Test Method for the rest API, creating new ingredients and putting them in 
+		 * the Ingredients table, and deleting ingredients from the restAPI table. 
+		 * 
+		 * @throws Exception 
+		 * @throws UnsupportedEncodingException 
+		 */
 		@Test 
 		@Transactional
 		public void createAndDeleteIngredient() throws Exception { 
@@ -120,7 +117,11 @@ public class APIIngredientTest {
 
 			mvc.perform( post( "/api/v1/ingredients" ).contentType( MediaType.APPLICATION_JSON )
 	 	            .content( TestUtils.asJsonString( milk ) ) ).andExpect( status().isOk() );
-			
+				
+			//should not be able to add an ingredient with the same name twice
+			mvc.perform( post( "/api/v1/ingredients" ).contentType( MediaType.APPLICATION_JSON )
+	 	            .content( TestUtils.asJsonString( milk ) ) ).andExpect( status().isConflict() );
+
 			mvc.perform( post( "/api/v1/ingredients" ).contentType( MediaType.APPLICATION_JSON )
 	 	            .content( TestUtils.asJsonString( sugar ) ) ).andExpect( status().isOk() );
 			
@@ -131,6 +132,9 @@ public class APIIngredientTest {
 		
 			//assert milk was deleted
 			Assertions.assertTrue(service.count() == 1); 
+			
+			//cannot delete an ingredient that does not exist
+			mvc.perform(delete( "/api/v1/ingredients/milk" ) ).andDo( print() ).andExpect( status().isNotFound() );
 			
 			
 			
