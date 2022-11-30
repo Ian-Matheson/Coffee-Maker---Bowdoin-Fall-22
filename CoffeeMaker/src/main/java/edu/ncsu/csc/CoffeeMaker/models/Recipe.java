@@ -41,7 +41,6 @@ public class Recipe extends DomainObject {
      * Creates a default recipe for the coffee maker.
      */
     public Recipe () {
-        this.name = "";
         ingredients = new ArrayList();
     }
 
@@ -51,7 +50,7 @@ public class Recipe extends DomainObject {
      * @return true if all ingredient fields are 0, otherwise return false
      */
     public boolean checkRecipe () {
-    	for (int i=0; i < ingredients.size(); i++) {
+    	for (int i = 0; i < ingredients.size(); i++) {
     		if (ingredients.get(0).getAmount() != 0) {
     			return false;
     		}
@@ -67,6 +66,9 @@ public class Recipe extends DomainObject {
      */
     @SuppressWarnings ( "unused" )
     private void setId ( final Long id ) {
+    	if (id < 0) {
+    		throw new IllegalArgumentException();
+    	}
         this.id = id;
     }
     
@@ -87,6 +89,9 @@ public class Recipe extends DomainObject {
      *            The name to set.
      */
     public void setName ( final String name ) {
+    	if (name == null || "".equals(name)) {
+    		throw new IllegalArgumentException();
+    	}
         this.name = name;
     }
     
@@ -106,6 +111,9 @@ public class Recipe extends DomainObject {
      *            The price to set.
      */
     public void setPrice ( final Integer price ) {
+    	if (price == null || price < 0) {
+    		throw new IllegalArgumentException();
+    	}
         this.price = price;
     }
     
@@ -122,11 +130,23 @@ public class Recipe extends DomainObject {
     /**
      * Adds an ingredient to the recipe
      *
+     * @param ingredient that we want to edit
+     * @param amount that we want to change our ingredient amount to
      * @return true if the ingredient is successfully added, otherwise return false
      */
     public boolean addIngredient (Ingredient ingredient, int amount) {
     	//Maybe need cases for when can't add ingredient? like when ingredient null?
-    	//TODO  check for duplicates! Make sure ingredient is in inventory!
+    	//Make sure ingredient is in inventory!
+    	//Can't use contains because equals isn't set up
+    	if (amount < 0 || ingredient == null) {
+    		throw new IllegalArgumentException();
+    	}
+    	for (int i = 0; i < ingredients.size(); i++) {
+    		if (ingredient.getName().equals(ingredients.get(i).getName())) {
+    			//SHOULD IT RETURN FALSE?
+    			throw new IllegalArgumentException();
+    		}
+    	}
     	Ingredient temp = new Ingredient(ingredient.getName(), amount);
     	ingredients.add(temp);
     	return true;
@@ -135,19 +155,24 @@ public class Recipe extends DomainObject {
     /**
      * Edit an ingredient currently in the recipe
      *
+     * @param ingredient that we want to edit
+     * @param amount that we want to change our ingredient amount to
      * @return true if the ingredient is successfully added, otherwise return false
      */
-    //Would these two ingredients ever have different amounts? NO
     public boolean editIngredient (Ingredient ingredient, int amount) {
-    	for (int i=0; i < ingredients.size(); i++) {
+    	if (amount < 0 || ingredient == null) {
+    		throw new IllegalArgumentException();
+    	}
+    	for (int i = 0; i < ingredients.size(); i++) {
     		//CHANGED THIS TO NAME BECAUSE OUR EQUALS METHOD ISN'T SET UP
     		if (ingredients.get(i).getName().equals(ingredient.getName())) {
     			ingredient.setAmount(amount);
     			ingredients.set(i, ingredient);
     			return true;
+
     		}
     	}
-    	return false;
+    	throw new IllegalArgumentException();
     }
     
     /**
@@ -162,11 +187,21 @@ public class Recipe extends DomainObject {
     /**
      * Removes an ingredient from the recipe
      *
+     * @param name of the ingredient to remove
      * @return true if the ingredient is successfully added, otherwise return false
      */
-    //Would these two ingredients ever have different amounts?
-    public boolean removeIngredient (Ingredient ingredient) {
-    	return ingredients.remove(ingredient);
+    //return false or throw iae?
+    public boolean removeIngredient (String name) {
+    	if (name == null || ingredients.size() <= 1) {
+    		throw new IllegalArgumentException();
+    	}
+    	for (int i = 0; i < ingredients.size(); i++) {
+    		if (name.equals(ingredients.get(i).getName())) {
+    			ingredients.remove(i);
+    			return true;
+    		}
+    	}
+    	throw new IllegalArgumentException();
     }
    
 
@@ -177,17 +212,9 @@ public class Recipe extends DomainObject {
      */
     //DONT RLY GET THE POINT OF THIS
     public void updateRecipe ( final Recipe r ) {
-//    	for (int i=0; i < ingredients.size(); i++) {
-//    		String currName = ingredients.get(i).getName();
-//    		
-//    		for (int j=0; j < r.getIngredients().size(); j++) {
-//    			String newName = r.getIngredients().get(j).getName();
-//    			if (currName.equals(newName)) {
-//    				int newAmount = r.getIngredients().get(j).getAmount();
-//    				ingredients.get(i).setAmount(newAmount);
-//    			}
-//    		}
-//    	}
+    	if (r == null) {
+    		throw new IllegalArgumentException();
+    	}
     	ingredients = r.getIngredients();
         setPrice( r.getPrice() );
         setName( r.getName() );
