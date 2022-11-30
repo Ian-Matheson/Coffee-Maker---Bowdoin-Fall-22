@@ -31,6 +31,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import edu.ncsu.csc.CoffeeMaker.common.TestUtils;
 import edu.ncsu.csc.CoffeeMaker.controllers.APIInventoryController;
+import edu.ncsu.csc.CoffeeMaker.models.Ingredient;
 import edu.ncsu.csc.CoffeeMaker.models.Inventory;
 import edu.ncsu.csc.CoffeeMaker.models.Recipe;
 import edu.ncsu.csc.CoffeeMaker.repositories.InventoryRepository;
@@ -87,10 +88,15 @@ public class APITest {
 			Recipe r = new Recipe();
 	 	    r.setName("mocha");
 	 	    r.setPrice(9);
-	 	    r.setMilk(1);
-	 	    r.setSugar(1);
-	 	    r.setCoffee(2);
-	 	    r.setChocolate(1);
+	 	    Ingredient milk = new Ingredient("milk", 2); 
+	 	    Ingredient sugar = new Ingredient("sugar", 2); 
+	 	    Ingredient coffee = new Ingredient("coffee", 2); 
+	 	    Ingredient chocolate = new Ingredient("chocolate", 2); 
+
+	 	    r.addIngredient(milk, 2);
+	 	    r.addIngredient(sugar, 2);
+	 	    r.addIngredient(coffee, 2);
+	 	    r.addIngredient(chocolate, 2);
 	 	    
 	 	    
 	 	   mvc.perform( post( "/api/v1/recipes" ).contentType( MediaType.APPLICATION_JSON )
@@ -99,16 +105,21 @@ public class APITest {
 	 	   //Team Task - Getting Recipes
 	 	   assertTrue(recipe.contains(recipe));
 	 	   
-	 	   //Team Task - Adding Inventory 
-	 	   edu.ncsu.csc.CoffeeMaker.models.Inventory products = new edu.ncsu.csc.CoffeeMaker.models.Inventory(50, 50, 50, 50);
+	 	   
+	 	   Inventory products = new Inventory(); 
+	 	   
+	 	   products.addIngredients("milk", 2);
+	 	   products.addIngredients("sugar", 2);
+	 	   products.addIngredients("coffee", 2);
+	 	   products.addIngredients("chocolate", 2);
 	 	   
 	 	   ResultActions addingInventoryTest = mvc.perform( put( "/api/v1/inventory" ).contentType( MediaType.APPLICATION_JSON )
 	 	            .content( TestUtils.asJsonString( products ) ) ).andExpect( status().isOk() );
 	 	   
-	 	   assertTrue(products.getMilk() == 50);
-	 	   assertTrue(products.getChocolate() == 50);
-	 	   assertTrue(products.getSugar() == 50);
-	 	   assertTrue(products.getCoffee() == 50);
+	 	   assertTrue(products.getIngredients().get(0).getAmount() == 2);
+	 	   assertTrue(products.getIngredients().get(1).getAmount() == 2);
+	 	   assertTrue(products.getIngredients().get(2).getAmount() == 2);
+	 	   assertTrue(products.getIngredients().get(3).getAmount() == 2);
 	 	   
 	 	   //ask about how to test these things! #FIXME
 	 	   
