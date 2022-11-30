@@ -20,6 +20,7 @@ import edu.ncsu.csc.CoffeeMaker.common.TestUtils;
 import edu.ncsu.csc.CoffeeMaker.models.Ingredient;
 import edu.ncsu.csc.CoffeeMaker.models.Inventory;
 import edu.ncsu.csc.CoffeeMaker.models.Recipe;
+import edu.ncsu.csc.CoffeeMaker.services.IngredientService;
 import edu.ncsu.csc.CoffeeMaker.services.InventoryService;
 import edu.ncsu.csc.CoffeeMaker.services.RecipeService;
 
@@ -36,19 +37,27 @@ public class APICoffeeTest {
 
     @Autowired
     private InventoryService iService;
+    
+    @Autowired
+    private IngredientService ingService; 
 
     /**
      * Sets up the tests.
      */
     @BeforeEach
     public void setup () {
-
+    	
+    	service.deleteAll();
+    	ingService.deleteAll(); 
+    	iService.deleteAll(); 
+    	
         final Inventory ivt = iService.getInventory();
 
         ivt.addIngredients("Coffee", 500);
         ivt.addIngredients("Pumpkin Spice", 500);
         ivt.addIngredients("Milk", 500);
         ivt.addIngredients("Sugar", 500);
+        ivt.addIngredients("Chocolate", 500);
 
         iService.save( ivt );
 
@@ -56,11 +65,12 @@ public class APICoffeeTest {
         recipe.setName( "Coffee" );
         recipe.setPrice( 50 );
         
-        final Ingredient coffee = new Ingredient("Coffee", 500);
+        
+        final Ingredient coffee = new Ingredient("Coffee", 400);
         recipe.addIngredient(coffee, 15);
-        final Ingredient chocolate = new Ingredient("Chocolate", 500);
+        final Ingredient chocolate = new Ingredient("Chocolate", 400);
         recipe.addIngredient(chocolate, 15);
-        final Ingredient milk = new Ingredient("Milk", 500);
+        final Ingredient milk = new Ingredient("Milk", 400);
         recipe.addIngredient(milk, 15);
 
         service.save( recipe );
