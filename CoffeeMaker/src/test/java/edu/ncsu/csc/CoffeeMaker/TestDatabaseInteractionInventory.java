@@ -98,6 +98,13 @@ public class TestDatabaseInteractionInventory {
 
 	    DBinventory.useIngredients(r1);
     	
+	    inventoryService.save(i);
+    	DBinventory= inventoryService.getInventory();
+    	
+    	Assertions.assertEquals(198, DBinventory.getIngredients().get(0).getAmount(), "Returns the amount of the first ingredient.");
+ 	    Assertions.assertEquals(496, DBinventory.getIngredients().get(1).getAmount(), "Returns the amount of the second ingredient.");
+ 	    Assertions.assertEquals(999, DBinventory.getIngredients().get(2).getAmount(), "Returns the amount of the third ingredient.");
+     	
 	    Assertions.assertEquals(198, i.getIngredients().get(0).getAmount(), "Returns the amount of the first ingredient.");
 	    Assertions.assertEquals(496, i.getIngredients().get(1).getAmount(), "Returns the amount of the second ingredient.");
 	    Assertions.assertEquals(999, i.getIngredients().get(2).getAmount(), "Returns the amount of the third ingredient.");

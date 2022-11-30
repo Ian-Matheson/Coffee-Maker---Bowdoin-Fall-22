@@ -123,6 +123,9 @@ public class TestDatabaseInteractionIngredient {
 	    assertEquals(ing3.getName(), ingFBN.getName());
 	    assertEquals(ing3.getAmount(), ingFBN.getAmount());
 
+	    Ingredient ing4 = new Ingredient("Sugar", 500);
+        ingredientService.save(ing4);
+        
 	    //ingredientService.save(dbIngredient);
 	    
 	    
@@ -176,5 +179,4 @@ public class TestDatabaseInteractionIngredient {
 	    
 	    assertEquals(0, dbIngredients.size());
 	}
-	//MULTIPLE INGREDIENTS WITH THE SAME NAME
 }

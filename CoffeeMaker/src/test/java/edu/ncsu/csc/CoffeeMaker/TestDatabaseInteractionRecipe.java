@@ -615,4 +615,7 @@ public class TestDatabaseInteractionRecipe {
 		}
 	}
 
+	//Have an inventory and when adding an ingredient it doesn't duplicate it, but instead updates the count
+	
+	//USE INGREDIENT
 }
