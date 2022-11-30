@@ -1,0 +1,202 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Add a Recipe</title>
+<style>
+
+
+
+.has-error {
+    color: red;
+}
+
+table, th, td {
+  border:1px solid black;
+  background-color: white;
+}
+
+</style>
+<link rel="stylesheet" href="css/bootstrap.css" />
+<link rel="stylesheet" href="css/app.css" />
+</head>
+<body>
+	<script
+		src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.js"></script>
+
+	<script>
+		/*<![CDATA[*/
+		var app = angular.module('myApp', []);
+		app.controller('addRecipeCtrl', function($scope, $http, $q) {
+			console.log("Hit!");
+
+			$scope.reset = function() {
+				$scope.recipe = {
+					name : '',
+					price : '',
+				};
+                $scope.ingredient = {
+					name : '',
+					amount : '',
+				};
+				if (undefined != $scope.addRecipeForm) {
+					$scope.addRecipeForm.$setPristine(); // reset Form
+				}
+			}
+
+			$scope.submit = function() {
+				$scope.addRecipe();
+
+				$scope.reset();
+			}
+
+			$scope.addRecipe = function() {
+				$scope.success = false;
+				$scope.failure = false;
+
+				$http.post("/api/v1/recipes", $scope.recipe).then(
+						function(success) {
+							$scope.success = true;
+							$scope.failure = false;
+						}, function(rejection) {
+							console.error("Error while adding recipe");
+						});
+			}
+
+			$scope.reset();
+
+		});
+		/*]]>*/
+	</script>
+
+
+
+	<div ng-app="myApp" class="generic-container ng-cloak"
+		ng-controller="addRecipeCtrl as ctrl">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<span class="lead"><u>Add a Recipe</u></span>
+			</div>
+
+			<div class="formcontainer">
+				<form ng-submit="submit()" name="addRecipeForm"
+					class="form-horizontal">
+
+					<div class="add-recipe">
+                        <label class="col-md-2 control-lable" for="file">Recipe</label>
+                        <div class="row">
+                            <div class="form-group col-md-12">
+                                <label class="col-md-2 control-lable" for="file">Name</label>
+                                <div class="col-md-7">
+                                    <input type="text" ng-model="recipe.name" name="name"
+                                        class="recipe name form-control input-sm"
+                                        placeholder="Enter recipe name" required="0" />
+                                    <div class="has-error" ng-show="addRecipeForm.$dirty">
+                                        <span ng-show="addRecipeForm.name.$error.required">This
+                                            is a required field.</span> <span
+                                            ng-show="addRecipeForm.name.$invalid">This field is
+                                            invalid.</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-md-12">
+                                <label class="col-md-2 control-lable" for="file">Price</label>
+                                <div class="col-md-7">
+                                    <input type="number" ng-model="recipe.price" name="price"
+                                        class="price form-control input-sm"
+                                        placeholder="Enter recipe price" required="0" min="0"/>
+                                    <div class="has-error" ng-show="addRecipeForm.$dirty">
+                                        <span ng-show="addRecipeForm.price.$error.required">This
+                                            is a required field.</span> <span
+                                            ng-show="addRecipeForm.price.$error.min">Minimum amount
+                                            is 0.</span> <span ng-show="addRecipeForm.price.$invalid">This
+                                            field is invalid.</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="new-ingredient">
+                        <label class="col-md-2 control-lable" for="file">Ingredients</label>
+                        <div class="row">
+                            <div class="form-group col-md-12">
+                                <label class="col-md-2 control-lable" for="file">Name</label>
+                                <div class="col-md-7">
+                                    <input type="text" ng-model="ingredient.name" name="ingredientname"
+                                        class="ingredientname form-control input-sm"
+                                        placeholder="Enter ingredient name" required="0" />
+                                    <div class="has-error" ng-show="addRecipeForm.$dirty">
+                                        <span ng-show="addRecipeForm.ingredientname.$error.required">This
+                                            is a required field.</span> <span
+                                            ng-show="addRecipeForm.ingredientname.$invalid">This field is
+                                            invalid.</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-md-12">
+                                <label class="col-md-2 control-lable" for="file">Amount</label>
+                                <div class="col-md-7">
+                                    <input type="number" ng-model="ingredient.amount" name="ingredientamount"
+                                        class="ingredientamount form-control input-sm"
+                                        placeholder="Enter amount of ingredient" required="0" min="0"/>
+                                    <div class="has-error" ng-show="addRecipeForm.$dirty">
+                                        <span ng-show="addRecipeForm.ingredientamount.$error.required">This
+                                            is a required field.</span> <span
+                                            ng-show="addRecipeForm.ingredientamount.$error.min">Minimum
+                                            amount is 0.</span> <span ng-show="addRecipeForm.ingredientamount.$invalid">This
+                                            field is invalid.</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <button> + Add New Ingredient </button>
+                    </div>
+                    <br>
+					<div class="row">
+						<div class="form-actions floatRight">
+							<input type="submit" value="Submit"
+								class="btn btn-primary btn-sm"
+								ng-disabled="addRecipeForm.$invalid" />
+							<button type="button" ng-click="reset()"
+								class="btn btn-warning btn-sm"
+								ng-disabled="addRecipeForm.$pristine">Reset Form</button>
+						</div>
+					</div>
+                    <table style = "width:30%">
+                        <tr>
+                            <th>ID</th>
+                            <th>Ingredients In Inventory</th>
+                            <th>Amount</th>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>Chocolate</td>
+                            <td>300</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>Coffee</td>
+                            <td>420</td>
+                        </tr>
+                        <tr>
+                            <td>1</td>
+                            <td>Milk</td>
+                            <td>500</td>
+                        </tr>
+                    </table>
+				</form>
+			</div>
+			<div ng-show="success">Recipe Created</div>
+			<div ng-show="failure">Error while adding recipe.</div>
+		</div>
+
+		<a href="/index">Home</a>
+	</div>
+</body>
+</html>

@@ -144,8 +144,6 @@ public class APITest {
 	 	   assertTrue(products.getIngredients().get(2).getAmount() == 2);
 	 	   assertTrue(products.getIngredients().get(3).getAmount() == 2);
 	 	   
-	 	   //ask about how to test these things! #FIXME
-	 	   
 	 	   //Team Task - Make Coffee!
 	 	   mvc.perform( post( "/api/v1/makecoffee/mocha" ).contentType( MediaType.APPLICATION_JSON )
 	 	            .content( TestUtils.asJsonString( r) ).content(TestUtils.asJsonString(9)) ).andExpect( status().isOk() );
