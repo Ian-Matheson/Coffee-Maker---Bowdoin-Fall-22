@@ -79,10 +79,6 @@ public class APIRecipeController extends APIController {
             return new ResponseEntity( errorResponse( "Recipe with the name " + recipe.getName() + " already exists" ),
                     HttpStatus.CONFLICT );
         }
-        if (recipe.getPrice() < 0) {
-        	return new ResponseEntity( errorResponse( "Recipe has a price that is not a positive integer" ),
-                    HttpStatus.CONFLICT );
-        } 
         if (recipe.getIngredients().size() == 0) {
         	return new ResponseEntity( errorResponse( "There are no ingredients in this recipe" ),
                     HttpStatus.CONFLICT );
