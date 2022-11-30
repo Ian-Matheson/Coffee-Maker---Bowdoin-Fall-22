@@ -54,8 +54,6 @@ public class TestDatabaseInteractionRecipe {
 	public void setUp() throws Exception {
 		recipeService.deleteAll();
 		inventoryService.deleteAll();
-
-		
 	}
 	
 	/**
@@ -242,7 +240,6 @@ public class TestDatabaseInteractionRecipe {
 	    assertEquals(r3.getIngredients().get(1), dbRecipe.getIngredients().get(1));
 	    assertEquals(r3.getIngredients().get(2), dbRecipe.getIngredients().get(2));
 
-	    
 	    recipeBN = recipeService.findByName("Christmas Special");
 	    assertEquals(r3.getName(), recipeBN.getName());
 

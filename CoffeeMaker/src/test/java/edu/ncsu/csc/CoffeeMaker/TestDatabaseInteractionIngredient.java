@@ -89,7 +89,6 @@ public class TestDatabaseInteractionIngredient {
         assertEquals("Sugar", dbIngredient.getName());
         assertEquals(300, dbIngredient.getAmount());  
         
-        
         Ingredient ing2 = new Ingredient("Milk", 500);
         ingredientService.save(ing2);
 
@@ -103,10 +102,7 @@ public class TestDatabaseInteractionIngredient {
 	    
 	    ingFBN = ingredientService.findByName("Milk");
 	    assertEquals(ing2.getName(), ingFBN.getName());
-	    assertEquals(ing2.getAmount(), ingFBN.getAmount());
-
-	    //ingredientService.save(dbIngredient);
-	    
+	    assertEquals(ing2.getAmount(), ingFBN.getAmount());	    
 	    
         Ingredient ing3 = new Ingredient("Cream", 300);
         ingredientService.save(ing3);
@@ -132,10 +128,8 @@ public class TestDatabaseInteractionIngredient {
 	}
 	
 	/**
-	 * 
 	 * This class tests how valid ingredient operations which delete ingredients interact
 	 * with the database.
-	 * 
 	 */
 	@Test
 	@Transactional

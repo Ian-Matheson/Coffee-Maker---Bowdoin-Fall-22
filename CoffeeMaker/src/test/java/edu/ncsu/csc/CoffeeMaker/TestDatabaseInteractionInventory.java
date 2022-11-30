@@ -20,15 +20,29 @@ import edu.ncsu.csc.CoffeeMaker.services.RecipeService;
 @ExtendWith ( SpringExtension.class )
 @EnableAutoConfiguration
 @SpringBootTest ( classes = TestConfig.class )
-
+/**
+ * Tests the inventory interaction of the database. 
+ * 
+ * @author jsoeder
+ *
+ */
 public class TestDatabaseInteractionInventory {
 
+	/**
+	 * Inventory service instance for testing. 
+	 */
 	@Autowired
 	private InventoryService inventoryService;
 	
+	/**
+	 * Ingredient service instance for testing. 
+	 */
 	@Autowired
 	private IngredientService ingredientService;
 	
+	/**
+	 * Recipe service instance for testing. 
+	 */
 	@Autowired
 	private RecipeService recipeService;
 	
@@ -41,7 +55,6 @@ public class TestDatabaseInteractionInventory {
 		inventoryService.deleteAll();
 		recipeService.deleteAll();
 		ingredientService.deleteAll();
-		
 	}
 	
 	/**
@@ -97,6 +110,8 @@ public class TestDatabaseInteractionInventory {
 	    Assertions.assertFalse(DBinventory.enoughIngredients(r2), "There are not enough ingredients to make this recipe.");
 
 	    DBinventory.useIngredients(r1);
+    	inventoryService.save(DBinventory);
+
     	
 	    inventoryService.save(i);
     	DBinventory= inventoryService.getInventory();
@@ -112,25 +127,39 @@ public class TestDatabaseInteractionInventory {
 	}
 	
 	/**
-	 * Tests the database interaction of the inventory using the invalid methods of the inventory class.
-	 * 
-	 * @Test
+	 * Tests to make sure that adding an ingredient that already exists to the inventory
+	 * updates the amount value of the previous ingredient object and does not create a duplicate
+	 * ingredient object in the inventory.
+	 */
+	@Test
 	@Transactional
-	public void testInvalidInventory(){
+	public void testIngredientUpdateInventory(){
 		
 		Inventory i = new Inventory();
 		inventoryService.save(i);
-		Inventory i2 = new Inventory();
-		try {
-			inventoryService.save(i2);
-			Assertions.fail("Can not have two inventories.");
-		} catch (IllegalArgumentException e) {
-			//Exception caught, carry on
-		}
-	
+		
+		Ingredient i1 =  new Ingredient("Sugar", 200);
+	    Ingredient i2 =  new Ingredient("Milk", 500);
+	    Ingredient i3 =  new Ingredient("Chocolate", 1000);
+
+	    ingredientService.save(i1);
+	    ingredientService.save(i2);
+	    ingredientService.save(i3);
+
+		
+	    i.addIngredients("Sugar", 200);
+    	i.addIngredients("Milk", 500);
+    	i.addIngredients("Chocolate", 1000);
+    	i.addIngredients("Sugar", 100);
+    	
+    	inventoryService.save(i);
+    	Inventory DBinventory= inventoryService.getInventory();
+
+	    Assertions.assertEquals(100, DBinventory.getIngredients().get(0).getAmount(), "Returns the amount of the checked ingredient.");
+	    Assertions.assertEquals(3, i.getIngredients().size(), "Returns the number of ingredients in the Inventory.");
 		
 	}
-	 */
+	 
 	
 	
 	
