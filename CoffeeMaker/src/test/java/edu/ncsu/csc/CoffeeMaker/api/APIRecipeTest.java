@@ -24,7 +24,10 @@ import com.mysql.cj.x.protobuf.MysqlxCrud.Delete;
 
 import edu.ncsu.csc.CoffeeMaker.common.TestUtils;
 import edu.ncsu.csc.CoffeeMaker.models.Ingredient;
+import edu.ncsu.csc.CoffeeMaker.models.Inventory;
 import edu.ncsu.csc.CoffeeMaker.models.Recipe;
+import edu.ncsu.csc.CoffeeMaker.services.IngredientService;
+import edu.ncsu.csc.CoffeeMaker.services.InventoryService;
 import edu.ncsu.csc.CoffeeMaker.services.RecipeService;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -37,6 +40,12 @@ public class APIRecipeTest {
 
     @Autowired
     private RecipeService service;
+    
+    @Autowired 
+    private IngredientService ingredientService; 
+    
+    @Autowired 
+    private InventoryService inventoryService; 
 
     @Autowired
     private MockMvc       mvc;
@@ -57,6 +66,18 @@ public class APIRecipeTest {
     @Transactional
     public void ensureRecipe () throws Exception {
         service.deleteAll();
+    	ingredientService.deleteAll(); 
+    	inventoryService.deleteAll();
+    	
+
+    	Inventory ivt = new Inventory();
+    	ivt.addIngredients("milk", 500);
+    	ivt.addIngredients("sugar", 500);
+    	ivt.addIngredients("coffee", 500);
+    	ivt.addIngredients("chocolate", 500);
+    	
+    	inventoryService.save(ivt);
+
 
         final Recipe r = new Recipe();
  	    r.setName("mocha");
@@ -78,24 +99,20 @@ public class APIRecipeTest {
     @Test
     @Transactional
     public void invalidrecipes() throws Exception {
-    	 /*** Verifes that a invalid price input results inconflict*/
+    	
     	service.deleteAll();
-        final Recipe r2 = new Recipe();
- 	    r2.setName("matte");
- 	    r2.setPrice(-1);
- 	    Ingredient milk1 = new Ingredient("milk", 2); 
- 	    Ingredient sugar2 = new Ingredient("sugar", 2); 
- 	    Ingredient coffee2 = new Ingredient("coffee", 2); 
- 	    Ingredient chocolate4 = new Ingredient("chocolate", 2); 
+    	ingredientService.deleteAll(); 
+    	inventoryService.deleteAll();
+    	
 
- 	    r2.addIngredient(milk1, 2);
- 	    r2.addIngredient(sugar2, 2);
- 	    r2.addIngredient(coffee2, 2);
- 	    r2.addIngredient(chocolate4, 2);
- 	 
-        mvc.perform( post( "/api/v1/recipes" ).contentType( MediaType.APPLICATION_JSON )
-                .content( TestUtils.asJsonString( r2 ) ) ).andExpect( status().isConflict() );
-
+    	Inventory ivt = new Inventory();
+    	ivt.addIngredients("milk", 500);
+    	ivt.addIngredients("sugar", 500);
+    	ivt.addIngredients("coffee", 500);
+    	ivt.addIngredients("chocolate", 500);
+    	
+    	inventoryService.save(ivt);
+   
         //case when there are no ingredits 
         final Recipe r3 = new Recipe();
  	    r3.setName("water");
@@ -139,8 +156,19 @@ public class APIRecipeTest {
     @Transactional
     public void testRecipeAPI () throws Exception {
 
-        service.deleteAll();
+    	service.deleteAll();
+    	ingredientService.deleteAll(); 
+    	inventoryService.deleteAll();
+    	
 
+    	Inventory ivt = new Inventory();
+    	ivt.addIngredients("milk", 500);
+    	ivt.addIngredients("sugar", 500);
+    	ivt.addIngredients("coffee", 500);
+    	ivt.addIngredients("chocolate", 500);
+    	
+    	inventoryService.save(ivt);
+    	
         Recipe r = new Recipe();
  	    r.setName("mocha");
  	    r.setPrice(9);
@@ -164,8 +192,18 @@ public class APIRecipeTest {
     @Test
     @Transactional
     public void testAddRecipe2 () throws Exception {
-        service.deleteAll();
+    	service.deleteAll();
+    	ingredientService.deleteAll();
+    	inventoryService.deleteAll();
+    	
 
+    	Inventory ivt = new Inventory();
+    	ivt.addIngredients("milk", 500);
+    	ivt.addIngredients("sugar", 500);
+    	ivt.addIngredients("coffee", 500);
+    	ivt.addIngredients("chocolate", 500);
+    	
+    	inventoryService.save(ivt);
         /* Tests a recipe with a duplicate name to make sure it's rejected */
 
         Assertions.assertEquals( 0, service.findAll().size(), "There should be no Recipes in the CoffeeMaker" );
@@ -200,19 +238,29 @@ public class APIRecipeTest {
     @Test
     @Transactional
     public void testAddRecipe15 () throws Exception {
-        service.deleteAll();
-
+    	service.deleteAll();
+    	ingredientService.deleteAll(); 
+    	inventoryService.deleteAll();
         /* Tests to make sure that our cap of 3 recipes is enforced */
+    	
+
+    	Inventory ivt = new Inventory();
+    	ivt.addIngredients("milk", 500);
+    	ivt.addIngredients("sugar", 500);
+    	ivt.addIngredients("coffee", 500);
+    	ivt.addIngredients("chocolate", 500);
+    	
+    	inventoryService.save(ivt);
 
         Assertions.assertEquals( 0, service.findAll().size(), "There should be no Recipes in the CoffeeMaker" );
         
         final Recipe r = new Recipe();
  	    r.setName("Coffee");
  	    r.setPrice(9);
- 	    Ingredient milk = new Ingredient("milk", 2); 
- 	    Ingredient sugar = new Ingredient("sugar", 2); 
- 	    Ingredient coffee = new Ingredient("coffee", 2); 
- 	    Ingredient chocolate = new Ingredient("chocolate", 2); 
+ 	    Ingredient milk = new Ingredient("milk", 100); 
+ 	    Ingredient sugar = new Ingredient("sugar", 100); 
+ 	    Ingredient coffee = new Ingredient("coffee", 100); 
+ 	    Ingredient chocolate = new Ingredient("chocolate", 100); 
 
  	    r.addIngredient(milk, 2);
  	    r.addIngredient(sugar, 2);
@@ -220,22 +268,22 @@ public class APIRecipeTest {
  	    r.addIngredient(chocolate, 2);
  	    	    
  	    final Recipe r2 = new Recipe();
-	    r.setName("mocha");
-	    r.setPrice(9);
+	    r2.setName("mocha");
+	    r2.setPrice(9);
 
-	    r.addIngredient(milk, 2);
-	    r.addIngredient(sugar, 2);
-	    r.addIngredient(coffee, 2);
-	    r.addIngredient(chocolate, 2);
+	    r2.addIngredient(milk, 1);
+	    r2.addIngredient(sugar, 1);
+	    r2.addIngredient(coffee, 1);
+	    r2.addIngredient(chocolate, 1);
 	    
 	    final Recipe r3 = new Recipe();
- 	    r.setName("Milk");
- 	    r.setPrice(9);
+ 	    r3.setName("Milk");
+ 	    r3.setPrice(9);
  	    
- 	    r.addIngredient(milk, 2);
- 	    r.addIngredient(sugar, 2);
- 	    r.addIngredient(coffee, 2);
- 	    r.addIngredient(chocolate, 2);
+ 	    r3.addIngredient(milk, 3);
+ 	    r3.addIngredient(sugar, 3);
+ 	    r3.addIngredient(coffee, 3);
+ 	    r3.addIngredient(chocolate, 3);
 
         service.save( r );
         service.save( r2 );
@@ -245,15 +293,19 @@ public class APIRecipeTest {
                 "Creating three recipes should result in three recipes in the database" );
         
         final Recipe r4 = new Recipe();
-	    r.setName("mocha");
-	    r.setPrice(9);
+	    r4.setName("mocha");
+	    r4.setPrice(9);
 
-	    r.addIngredient(milk, 2);
-	    r.addIngredient(sugar, 2);
-	    r.addIngredient(coffee, 2);
-	    r.addIngredient(chocolate, 2);
-	  
-	    service.save(r4);
+	    r4.addIngredient(milk, 2);
+	    r4.addIngredient(sugar, 2);
+	    r4.addIngredient(coffee, 2);
+	    r4.addIngredient(chocolate, 2);
+	    try {
+	    	service.save(r4);
+	    }
+	    catch (IllegalArgumentException iae) {
+	    	//carry on
+	    }
 	    
         
         //Assertions.assertEquals( 3, service.count(), "Creating a fourth recipe should not get saved" );
@@ -267,7 +319,17 @@ public class APIRecipeTest {
     @Transactional
     public void deletrecipetest()  throws Exception {
     	service.deleteAll();
-
+    	ingredientService.deleteAll(); 
+    	inventoryService.deleteAll();
+    	
+    	Inventory ivt = new Inventory();
+    	ivt.addIngredients("milk", 500);
+    	ivt.addIngredients("sugar", 500);
+    	ivt.addIngredients("coffee", 500);
+    	ivt.addIngredients("chocolate", 500);
+    	
+    	inventoryService.save(ivt);
+    	
         Recipe r = new Recipe();
  	    r.setName("mocha");
  	    r.setPrice(9);
@@ -280,15 +342,30 @@ public class APIRecipeTest {
  	    r.addIngredient(sugar, 2);
  	    r.addIngredient(coffee, 2);
  	    r.addIngredient(chocolate, 2);
+ 	    
+ 	  
+ 	    Recipe r2 = new Recipe();
+	    r2.setName("ian");
+	    r2.setPrice(9);
+
+	    r2.addIngredient(milk, 2);
+	    r2.addIngredient(sugar, 2);
+	    r2.addIngredient(coffee, 2);
+	    r2.addIngredient(chocolate, 2);
+	    
+	   
+ 	    service.save(r);
+ 	    
+ 	  
 
         mvc.perform( delete( "/api/v1/recipes/mocha" ).contentType( MediaType.APPLICATION_JSON )
                 .content( TestUtils.asJsonString( r ) ) );
         
-        service.save(r);
         
-        mvc.perform( delete( "/api/v1/recipes/mocha" ).contentType( MediaType.APPLICATION_JSON )
-                .content( TestUtils.asJsonString( r ) ) );
-
+        
+        mvc.perform( delete( "/api/v1/recipes/ian" ).contentType( MediaType.APPLICATION_JSON )
+                .content( TestUtils.asJsonString( r2 ) ) );
+        
         Assertions.assertEquals( 0, (int) service.count() );
         
         
