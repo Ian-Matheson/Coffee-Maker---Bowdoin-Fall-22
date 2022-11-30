@@ -50,6 +50,7 @@ abstract public class Service <T extends DomainObject, K> {
      *            The object to save into the database.
      */
     public void save ( final T obj ) {
+    	//SAVE AND FLUSH
         getRepository().saveAndFlush( obj );
     }
 

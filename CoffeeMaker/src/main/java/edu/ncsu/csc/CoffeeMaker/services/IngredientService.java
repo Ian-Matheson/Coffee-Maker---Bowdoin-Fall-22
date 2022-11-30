@@ -1,9 +1,5 @@
 package edu.ncsu.csc.CoffeeMaker.services;
 
-import java.util.List;
-
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,10 +7,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Component;
 
 import edu.ncsu.csc.CoffeeMaker.models.Ingredient;
+
 import edu.ncsu.csc.CoffeeMaker.models.Inventory;
 import edu.ncsu.csc.CoffeeMaker.models.Recipe;
 import edu.ncsu.csc.CoffeeMaker.repositories.IngredientRepository;
-import edu.ncsu.csc.CoffeeMaker.repositories.InventoryRepository;
 
 /**
  * The InventoryService is used to handle CRUD operations on the Inventory
@@ -33,10 +29,20 @@ public class IngredientService extends Service<Ingredient, Long> {
      * operations on Ingredient model.
      */
     @Autowired
-    @Enumerated ( EnumType.STRING )
     private IngredientRepository ingredientRepository;
 
-
+    
+    /**
+     * Find an ingredient with the provided name
+     * 
+     * @param name
+     *            Name of the ingredient to find
+     * @return found ingredient, null if none
+     */
+    public Ingredient findByName ( final String name ) {
+        return ingredientRepository.findByName( name );
+    }
+    
     /**
      * Retrieves the singleton IngredientRepository instance from the database, creating it
      * if it does not exist.

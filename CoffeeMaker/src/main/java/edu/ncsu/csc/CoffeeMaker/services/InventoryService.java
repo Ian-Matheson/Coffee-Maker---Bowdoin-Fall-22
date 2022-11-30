@@ -52,5 +52,5 @@ public class InventoryService extends Service<Inventory, Long> {
             return i;
         }
     }
-
+    
 }

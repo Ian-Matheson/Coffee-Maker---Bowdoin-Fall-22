@@ -79,7 +79,6 @@ public class IngredientTest {
 	 */
     @Transactional
     @Test
-    //WHAT IF ID IS DUPLICATE???
 	public void testInvalidSetId() {
     	Ingredient i2 =  new Ingredient("Milk", 50);
     	
