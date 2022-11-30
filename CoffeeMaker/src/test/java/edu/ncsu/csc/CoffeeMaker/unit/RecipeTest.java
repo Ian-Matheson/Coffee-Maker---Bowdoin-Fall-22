@@ -1,14 +1,5 @@
 package edu.ncsu.csc.CoffeeMaker.unit;
 
-
-import static org.junit.Assert.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.util.List;
-
-import javax.validation.ConstraintViolationException;
-
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,7 +9,6 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
@@ -38,26 +28,21 @@ import edu.ncsu.csc.CoffeeMaker.services.RecipeService;
 @EnableAutoConfiguration
 @SpringBootTest ( classes = TestConfig.class )
 public class RecipeTest {
-
 	
 	/** allows inventory to be added to database*/
 	@SuppressWarnings("unused")
 	private MockMvc mvc;
 
-
 	@Autowired
 	private WebApplicationContext context;
 	
-
 	@SuppressWarnings("unused")
-
 	@Autowired
  	private RecipeService recipeService;
 	
 	
     @Autowired
     private RecipeService service;
-
 
     @BeforeEach
     public void setup () {
@@ -510,11 +495,11 @@ public class RecipeTest {
 			//Exception caught, carry on
 		}
     }
+   
 
     /**
      * Ensures that the update recipe method resets all of the necessary characteristics of the recipe.
      */
-
     @Test
     @Transactional
     public void testUpdateRecipe () {
@@ -560,7 +545,6 @@ public class RecipeTest {
     	Assertions.assertEquals( 3, r1.getPrice(), "The new ingredient price is not set" );
     }
     
-
     /**
      * Ensures that the toString method returns a string representation of the recipe.
      */
@@ -603,37 +587,6 @@ public class RecipeTest {
     	Assertions.assertFalse(r.equals(randomString)); 
     	
     	r.setName(randomString);
-    	Recipe anotherRecipe = new Recipe(); 
-    	Assertions.assertFalse(r.equals(anotherRecipe)); 
-    	
-    	r.setName("Sophia");
-    	anotherRecipe.setName("Ian");
-    	Assertions.assertFalse(r.equals(anotherRecipe)); 
-    	
-    	anotherRecipe.setName("Sophia");
-    	Assertions.assertTrue(r.equals(anotherRecipe)); 
-
-    }
-    
-    @Test
-    public void testToString() { 
-    	Recipe r = new Recipe(); 
-    	r.setName("Sophia"); 
-    	Assertions.assertEquals("Sophia", r.toString());
-    	Assertions.assertFalse("Ian".equals(r.toString())); 
-    }
-
-    @Test 
-    public void testEquals() {
-    	Recipe r = new Recipe(); 
-    	
-    	Assertions.assertFalse(r.equals(null)); 
-    	Assertions.assertTrue(r.equals(r)); 
-    	
-    	String string = "aslkdfhalkfj"; 
-    	Assertions.assertFalse(r.equals(string)); 
-    	
-    	r.setName(null);
     	Recipe anotherRecipe = new Recipe(); 
     	Assertions.assertFalse(r.equals(anotherRecipe)); 
     	
