@@ -13,6 +13,11 @@ table, th, td {
 		var app = angular.module('myApp', []);
 		app.controller('addIngredientCtrl', function($scope, $http) {
 			
+			$scope.ingredient = {
+					name : '',
+					amount : ''
+			}
+			
 			$scope.reset = function() {
 				$scope.ingredient = {
 					name : '',
@@ -44,10 +49,6 @@ table, th, td {
 			}
 
 			$scope.reset();
-		});
-		
-		var app = angular.module('myApp', []);
-		app.controller('getInventoryCtrl', function($scope, $http) {
 						
 			$scope.getInventory = function() {
 				$http.get("/api/v1/inventory").then(function(response) {
