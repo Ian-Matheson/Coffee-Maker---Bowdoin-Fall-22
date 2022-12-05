@@ -60,7 +60,7 @@ public class APIIngredientController extends APIController {
 	     * @return ResponseEntity indicating success if the Ingredient could be saved to
 	     *         the inventory, or an error if it could not be
 	     */
-	    @PostMapping ( BASE_PATH + "/ingredients" )
+	    @PutMapping ( BASE_PATH + "/ingredients" )
 	    public ResponseEntity createIngredient ( @RequestBody final Ingredient ingredient ) {
 	        if ( null != service.findByName( ingredient.getName() ) ) {
 	            return new ResponseEntity( errorResponse( "Ingredient with the name " + ingredient.getName() + " already exists" ),

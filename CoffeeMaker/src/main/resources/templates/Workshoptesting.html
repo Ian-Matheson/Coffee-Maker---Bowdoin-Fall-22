@@ -15,14 +15,47 @@
             		  
             		   alert("You entered: " + $scope.x );
             	    };
+            	    
+            	   
+            	    $scope.subtract = function(a,b) {
+              		  return a - b; 
+             		   
+             	    };
             	
             	
             	
-            	
+             	   $http.get("/api/v1/recipes").then(function(response) {
+             	      $scope.recipes = response.data;
+             	      
+             	      
+             	});
+             	   
+             	  $scope.timeIntervals = [
+             		    {value: 1, display: 'Ian'},
+             		    {value: 2, display: 'John'},
+             		    {value: 3, display: 'Sophia'},
+             		    {value: 4, display: 'William'}
+             		];
+             	  
+             	  
+             	 $scope.students = ["Ian", "John", "Sophia", "William"];
             
          
-      
-            
+             	$scope.commitData = {
+             	        "William":
+             	            [
+             	                { "count": 0, "display": "Software Eng", "timestamp": 2100 },
+             	                { "count": 0, "display": "AI", "timestamp": 2350 },
+             	                { "count": 0, "display": "FLW", "timestamp": 2421 }
+             	            ],
+             	        "John ":
+             	            [
+             	                { "count": 0, "display": "Software Eng", "timestamp": 2100 },
+             	                { "count": 0, "display": "AI", "timestamp": 2350 },
+             	                { "count": 0, "display": "Analysis", "timestamp": 3100 }
+             	            ]
+
+                };
             });
             /*]]>*/
         </script>
@@ -32,7 +65,47 @@
             <!--- Various HTML elements, with extra tags telling Angular how to work with them, go here -->
 			<button ng-click="myFunc()">Test</button>
 			
+			<button ng-click="subtract()">math</button>
+			
+			<button ng-click="response()">recipe button</button>
+			
 			<input  ng-model="x" />
+			
+			<input type="text" ng-model="y" required="true" />
+			
+			<h1>The differnce is </h1>
+			{{subtract(x,y)}}
+			
+			<h1>Recipes: </h1> {{response()}}
+			
+			<div class="col-sm">
+			    Select fav team 7 member: <br />
+			    <select ng-model="interval"
+			            ng-options="item as item.display for item in timeIntervals"
+			            required="true">
+			        <option value="">Select fav person</option>
+			    </select>
+			    
+							    
+				 <div class="col-sm">
+				    (Optional) Select the team 7 members to approve of  <br />
+				    <div ng-repeat="students in students track by $index">
+				        <input type="checkbox"
+				            ng-model="$parent.selectedBranches[students]">
+				        <tt> {{students}}</tt>
+				        </input>
+				    </div>
+				    
+				 
+					<div ng-repeat="(user, commits) in commitData track by $index">
+					    Classes for {{user}}:<br />
+					    <div id="{{user}}">
+					        <li ng-repeat="commit in commits">{{commit.display}}</li>
+					    </div>
+					</div>
+				   
+				</div>
+			</div>
 			
         </div>
         
