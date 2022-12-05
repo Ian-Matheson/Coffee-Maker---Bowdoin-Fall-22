@@ -14,7 +14,7 @@ table, th, td {
 		app.controller('addIngredientCtrl', function($scope, $http) {
 			
 			$scope.reset = function() {
-				$scope.recipe = {
+				$scope.ingredient = {
 					name : '',
 					amount : ''
 				};
@@ -33,10 +33,11 @@ table, th, td {
 				$scope.success = false;
 				$scope.failure = false;
 
-				$http.post("/api/v1/ingedient", $scope.ingredient).then(
+				$http.post("/api/v1/ingedients", $scope.ingredient).then(
 						function(success) {
 							$scope.success = true;
 							$scope.failure = false;
+							
 						}, function(rejection) {
 							console.error("Error while adding Ingredient");
 						});
@@ -100,7 +101,7 @@ table, th, td {
 				
 					<div class="row">	
 							<div class="form-actions floatRight">
-								<input type="submit" value="Submit" class="btn btn-primary btn-sm" />
+								<input type="submit" value="Submit" class="btn btn-primary btn-sm" ng-click="submit()" />
 								<button type="button" ng-click="reset()" 
 									class="btn btn-warning btn-sm">Reset Form</button>
 							</div>
