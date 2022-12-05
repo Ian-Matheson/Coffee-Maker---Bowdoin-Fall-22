@@ -10,17 +10,18 @@
             var app = angular.module('myApp', []);
             app.controller('populateCtrl', function($scope, $http, $q) {
             	
-            	$scope.selectedUser = {}; 
+            	  
+            	   $scope.myFunc = function() {
+            		  
+            		   alert("You entered: " + $scope.x );
+            	    };
+            	
+            	
+            	
+            	
             
-            	let x = Object();
-            
-           		x.selectedUser = "John";
-           		
-           	 
-  
-
-			console.log(x.selectedUser);
-            
+         
+      
             
             });
             /*]]>*/
@@ -29,10 +30,21 @@
         <div ng-app="myApp" ng-controller="populateCtrl">
 
             <!--- Various HTML elements, with extra tags telling Angular how to work with them, go here -->
-
+			<button ng-click="myFunc()">Test</button>
+			
+			<input  ng-model="x" />
+			
         </div>
         
     </div>
+    
+    
+    
+   		
+   
+ 
 
 </body>
+
+
 </html>
