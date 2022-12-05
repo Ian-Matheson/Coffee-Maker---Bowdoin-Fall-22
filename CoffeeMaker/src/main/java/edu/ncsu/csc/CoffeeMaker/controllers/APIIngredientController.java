@@ -9,12 +9,13 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import edu.ncsu.csc.CoffeeMaker.models.Ingredient;
+import edu.ncsu.csc.CoffeeMaker.models.Inventory;
 import edu.ncsu.csc.CoffeeMaker.services.IngredientService;
+import edu.ncsu.csc.CoffeeMaker.services.InventoryService;
 
 @SuppressWarnings ( { "unchecked", "rawtypes" } )
 @RestController
@@ -23,6 +24,9 @@ public class APIIngredientController extends APIController {
 	
 	    @Autowired
 	    private IngredientService service;
+	    
+	    @Autowired
+	    private InventoryService inventoryService;
 
 	    /**
 	     * REST API method to provide GET access to all ingredients in the system
@@ -67,6 +71,11 @@ public class APIIngredientController extends APIController {
 	                    HttpStatus.CONFLICT );
 	        }
         		service.save( ingredient );
+        		
+        		Inventory newInventory = inventoryService.getInventory();
+        		newInventory.addIngredients(ingredient.getName(), ingredient.getAmount());
+        		inventoryService.save( newInventory );
+        		
 	            return new ResponseEntity(successResponse( ingredient.getName() + " successfully created" ), HttpStatus.OK );
 	    }
 
