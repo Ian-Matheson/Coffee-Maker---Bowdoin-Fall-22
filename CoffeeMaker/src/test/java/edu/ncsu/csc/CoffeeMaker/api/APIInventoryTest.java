@@ -65,6 +65,7 @@ public class APIInventoryTest {
 	}
 	
 	@Test
+	@Transactional
     public void updateInventory() throws Exception {
 		
 		iService.deleteAll(); 
