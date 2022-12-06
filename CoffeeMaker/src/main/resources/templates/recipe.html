@@ -42,7 +42,7 @@
 			   					$scope.inventoryList.push(response.data[i].name); 
 
 							} 
-			         });
+			            });
 				}	
 			}
 
@@ -174,7 +174,7 @@
                                 <option value="" disabled> + Add New Ingredient </option>
                                 <!-- MAKE THIS WORK -->
                                 <div class="has-error" ng-show="addIngredientForm.$dirty">
-                                    <span ng-show="{{ingredientname}}== '+ Add New Ingredient'
+                                    <span ng-show="addIngredientForm.ingredientname==undefined
                                     || recipe.ingredients.length==0">This is a required field.</span> 
                                 </div>
                                 </select>
