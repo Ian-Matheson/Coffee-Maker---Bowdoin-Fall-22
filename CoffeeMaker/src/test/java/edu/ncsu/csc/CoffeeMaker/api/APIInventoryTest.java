@@ -70,19 +70,18 @@ public class APIInventoryTest {
 		iService.deleteAll(); 
 		
 		Inventory inventory = new Inventory(); 
-		Ingredient milk = new Ingredient("milk", 5); 
 		inventory.addIngredients("milk", 5);
+		inventory.addIngredients("sauce", 0);
 		iService.save(inventory);
+		
+		Ingredient milk = new Ingredient("milk", 5); 
 		
 		mvc.perform( put( String.format( "/api/v1/inventory") ).contentType( MediaType.APPLICATION_JSON )
                 .content( TestUtils.asJsonString( milk ) ) ).andExpect( status().isOk() );
 		String inventoryString = mvc.perform( get( ( "/api/v1/inventory") ).contentType( MediaType.APPLICATION_JSON )
                 .content( TestUtils.asJsonString( milk ) ) ).andExpect( status().isOk() ).andReturn().getResponse().getContentAsString();
 		
-		
-		
 		Ingredient sauce = new Ingredient("sauce", -1); 
-		inventory.addIngredients("sauce", 0);
 		
 		mvc.perform( put( String.format("/api/v1/inventory") ).contentType( MediaType.APPLICATION_JSON )
         .content( TestUtils.asJsonString( sauce ) ) ).andExpect( status().isConflict() );
