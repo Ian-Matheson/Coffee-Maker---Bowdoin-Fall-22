@@ -47,11 +47,12 @@ public class APIIngredientController extends APIController {
 	     * @return response to the request
 	     */
 	    @GetMapping ( BASE_PATH + "/ingredients/{name}" )
-	    public ResponseEntity getIngredient ( @PathVariable ( "name" ) final String name ) {
+	    public Ingredient getIngredient ( @PathVariable ( "name" ) final String name ) {
 	        final Ingredient ingredient = service.findByName( name );
-	        return null == ingredient
-	                ? new ResponseEntity( errorResponse( "No ingredient found with name " + name ), HttpStatus.NOT_FOUND )
-	                : new ResponseEntity( ingredient, HttpStatus.OK );
+	        return ingredient;
+	        //return null == ingredient
+	               // ? new ResponseEntity( errorResponse( "No ingredient found with name " + name ), HttpStatus.NOT_FOUND )
+	               // : new ResponseEntity( ingredient, HttpStatus.OK );
 	    }
 
 	    /**
