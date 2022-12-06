@@ -35,9 +35,9 @@ table, th, td {
 			}
 			
 			
-			$scope.addIngredienttable = function() {
-				$scope.inventoryOriginal.push($scope.ingredient)
-			}
+			//$scope.addIngredienttable = function() {
+			//	$scope.inventoryOriginal.push($scope.ingredient)
+			//}
 			
 			$scope.reset = function() {
 				$scope.ingredient = {
@@ -60,8 +60,9 @@ table, th, td {
 				
 				$http.post("/api/v1/ingredients", $scope.ingredient).then(
 						function(response ) {
-							$scope.submissionSuccess=true;
-							console.log(response);
+								$scope.submissionSuccess=true;
+								console.log(response);
+								
 							getInventory();
 							
 						}, function(rejection) {
@@ -127,7 +128,7 @@ table, th, td {
 						    <th>Ingredient</th>
 						    <th>Amount</th>
 						  </tr>
-						   <tr ng-repeat="item in inventoryOriginal">
+						   <tr ng-repeat="item in inventoryOriginal.ingredients">
 						    <td>{{item.name}}</td>
 						    <td>{{item.amount}}</td>
 						  </tr>
