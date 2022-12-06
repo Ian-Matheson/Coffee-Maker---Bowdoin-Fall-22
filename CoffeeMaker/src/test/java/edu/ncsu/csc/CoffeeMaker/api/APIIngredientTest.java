@@ -85,7 +85,7 @@ public class APIIngredientTest {
 			
 			Ingredient milk = new Ingredient("milk", 5); 
 
-			mvc.perform( put( "/api/v1/ingredients" ).contentType( MediaType.APPLICATION_JSON ).content( TestUtils.asJsonString( milk ) ) ).andExpect( status().isOk() );
+			mvc.perform( post( "/api/v1/ingredients" ).contentType( MediaType.APPLICATION_JSON ).content( TestUtils.asJsonString( milk ) ) ).andExpect( status().isOk() );
 			
 			
 			//assert milk was added 
@@ -123,14 +123,14 @@ public class APIIngredientTest {
 			Ingredient milk = new Ingredient("milk", 5);
 			Ingredient sugar = new Ingredient("sugar", 5); 
 
-			mvc.perform( put( "/api/v1/ingredients" ).contentType( MediaType.APPLICATION_JSON )
+			mvc.perform( post( "/api/v1/ingredients" ).contentType( MediaType.APPLICATION_JSON )
 	 	            .content( TestUtils.asJsonString( milk ) ) ).andExpect( status().isOk() );
 				
 			//should not be able to add an ingredient with the same name twice
-			mvc.perform( put( "/api/v1/ingredients" ).contentType( MediaType.APPLICATION_JSON )
+			mvc.perform( post( "/api/v1/ingredients" ).contentType( MediaType.APPLICATION_JSON )
 	 	            .content( TestUtils.asJsonString( milk ) ) ).andExpect( status().isConflict() );
 
-			mvc.perform( put( "/api/v1/ingredients" ).contentType( MediaType.APPLICATION_JSON )
+			mvc.perform( post( "/api/v1/ingredients" ).contentType( MediaType.APPLICATION_JSON )
 	 	            .content( TestUtils.asJsonString( sugar ) ) ).andExpect( status().isOk() );
 			
 			//assert milk and sugar were added 
