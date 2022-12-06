@@ -37,7 +37,7 @@
 				};
 				if (undefined != $scope.addRecipeForm) {
 					$scope.addRecipeForm.$setPristine(); // reset Form
-                    $scope.inventoryList = ["Coffee", "Chocolate", "Milk", "Butter"];
+                    $scope.inventoryList = ["Coffee", "Chocolate", "Milk", "Sugar"];
 				}
 			}
 
@@ -48,7 +48,7 @@
 				};
 			}
 
-            $scope.inventoryList = ["Coffee", "Chocolate", "Milk", "Butter"];
+            $scope.inventoryList = ["Coffee", "Chocolate", "Milk", "Sugar"];
 
             $scope.ingredient = {
 					name : "",
@@ -56,8 +56,12 @@
 				};
 
             $scope.removeIngredient = function(currName) {
+                // console.log(currName);
+                // console.log($scope.recipe.ingredients)
+                // console.log($scope.recipe.ingredients.indexOf(currName))
+                $scope.recipe.ingredients.splice($scope.recipe.ingredients.indexOf($scope.ingredient.name));
                 $scope.inventoryList.push(currName);
-                $scope.recipe.ingredients.splice($scope.recipe.ingredients.indexOf($scope.ingredient.name), 1);
+                // console.log($scope.recipe.ingredients);
             }
 
 			$scope.submit = function() {
@@ -143,9 +147,9 @@
                         <div class="form-group col-md-12">
                             <label class="col-md-2 control-lable" for="file">Ingredient To Add</label>
                             <div class="col-md-7">
-                                <select ng-model="ingredient.name" required="true"
+                                <select ng-model="ingredient.name" required="true" name="ingredientname"
                                     ng-options="item as item for item in inventoryList">
-                                <option value=""> + Add New Ingredient </option>
+                                <option value="" disabled> + Add New Ingredient </option>
                                 </select>
                             </div>
                         </div>
@@ -156,7 +160,7 @@
                                 <div class="col-md-7">
                                     <input type="number" ng-model="ingredient.amount" name="ingredientamount"
                                         class="ingredientamount form-control input-sm"
-                                        placeholder="Enter amount of ingredient" require="0" min="0"/>
+                                        placeholder="Enter amount of ingredient" required="0" min="0"/>
                                     <div class="has-error" ng-show="addRecipeForm.$dirty">
                                         <span ng-show="addRecipeForm.ingredientamount.$error.required">This
                                             is a required field.</span> <span
@@ -168,7 +172,8 @@
                             </div>
                         </div>
                         <br>
-                        <button ng-click="addIngredient()">Add Ingredient To Recipe</button>
+                        <button ng-disabled="addRecipeForm.ingredientname.$invalid || addRecipeForm.ingredientamount.$invalid"
+                        ng-click="addIngredient()">Add Ingredient To Recipe</button>
                     </div>
                     
                     <br>
@@ -177,23 +182,31 @@
 							<input type="submit" value="Submit"
 								class="btn btn-primary btn-sm"
 								ng-disabled="addRecipeForm.$invalid" />
+                            <!-- <button type="submit" ng-click="addRecipe()"
+								class="btn btn-warning btn-sm"
+								ng-disabled="addRecipeForm.$invalid">Submit
+                            </button> -->
 							<button type="button" ng-click="reset()"
 								class="btn btn-warning btn-sm"
-								ng-disabled="addRecipeForm.$pristine">Reset Form</button>
+								ng-disabled="addRecipeForm.$pristine">Reset Form
+                            </button>
 						</div>
 					</div>
-                        <table style = "width:30%">
-                            <tr>
-                                <th>Ingredient</th>
-                                <th>Amount</th>
-                            </tr>
-                            <tr ng-repeat="item in recipe.ingredients">
-                                <td> {{item.name}} </td>
-                                <td> {{item.amount}} </td>
-                                <td> <button type="button" 
-                                    ng-click="removeIngredient(item.name)">Remove</button></td>
-                            </tr>
-                        </table>
+                    <div class="panel-heading">Ingredients In Recipe</u></span>
+                    </div>
+                    <table style = "width:30%">
+                        <tr>
+                            <th>Ingredient</th>
+                            <th>Amount</th>
+                        </tr>
+                        <tr ng-repeat="item in recipe.ingredients">
+                            <td> {{item.name}} </td>
+                            <td> {{item.amount}} </td>
+                            <td> 
+                                <button type="button" ng-click="removeIngredient(item.name)">Remove</button>
+                            </td>
+                        </tr>
+                    </table>
 				</form>
 			</div>
 			<div ng-show="success">Recipe Created</div>
