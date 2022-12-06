@@ -107,7 +107,7 @@
 		/*]]>*/
 	</script>
    
-	<div ng-app="myApp" class="generic-container ng-cloak"
+		<div ng-app="myApp" class="generic-container ng-cloak"
 		ng-controller="addRecipeCtrl as ctrl">
 		<div class="panel panel-default">
 			<div class="panel-heading">
@@ -154,16 +154,10 @@
                             </div>
                         </div>
                     </div>
-                    <br>
 				</form>
 			</div>
-			<div ng-show="success">Recipe Created</div>
-			<div ng-show="failure">Error while adding recipe.</div>
-
-
-
             <div class="formcontainer">
-				<form ng-submit="submit()" name="addIngredientForm"
+				<form name="addIngredientForm"
 					class="form-horizontal">
                     <div class="row">
                         <div class="form-group col-md-12">
@@ -172,13 +166,11 @@
                                 <select ng-model="ingredient.name" required="true" name="ingredientname"
                                     ng-options="item as item for item in inventoryList">
                                 <option value="" disabled> + Add New Ingredient </option>
-                                <!-- MAKE THIS WORK -->
-                                <div class="has-error" ng-show="addIngredientForm.$dirty">
-                                    <span ng-show="addIngredientForm.ingredientname==undefined
-                                    || recipe.ingredients.length==0">This is a required field.</span> 
+                                <div class="has-error" ng-show="addRecipeForm.$dirty">
+                                    <span ng-show="addIngredientForm.ingredientname.$error.required">This is a required field.</span> 
+                                    <span ng-show="recipe.ingredients.length==0">This is a required field.</span> 
                                 </div>
                                 </select>
-                                {{ ingredientname }}
                             </div>
                         </div>
                     </div>
@@ -189,26 +181,26 @@
                                     <input type="number" ng-model="ingredient.amount" name="ingredientamount"
                                         class="ingredientamount form-control input-sm"
                                         placeholder="Enter amount of ingredient" required="0" min="0"/>
-                                    <div class="has-error" ng-show="addIngredientForm.$dirty">
+                                    <div class="has-error" ng-show="addRecipeForm.$dirty">
                                         <span ng-show="addIngredientForm.ingredientamount.$error.required 
                                         && recipe.ingredients.length==0">This is a required field.</span> 
                                         <span ng-show="addIngredientForm.ingredientamount.$error.min">Minimum
                                         amount is 0.</span> 
                                         <span ng-show="addIngredientForm.ingredientamount.$invalid && recipe.ingredients.length==0">This field is invalid.</span>
-                                        <span ng-show="addRecipeForm.$dirty && recipe.ingredients.length==0 && addIngredientForm.ingredientamount.$pristine">At least one ingredient required.</span>
+                                        <span ng-show="recipe.ingredients.length==0 && !addIngredientForm.ingredientamount.$dirty">Must have at least 1 ingredient.</span>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <button ng-disabled="addIngredientForm.ingredientname.$invalid || addIngredientForm.ingredientamount.$invalid"
                         ng-click="addIngredient()">Add Ingredient To Recipe</button>
-                    </div>
-                    
+                    </div> 
                     <br>
-					
+
+				
                     <div class="panel-heading">Ingredients In Recipe</u></span>
                     </div>
-                    <table style = "width:30%">
+                    <table style = "width:40%">
                         <tr>
                             <th>Ingredient</th>
                             <th>Amount</th>
