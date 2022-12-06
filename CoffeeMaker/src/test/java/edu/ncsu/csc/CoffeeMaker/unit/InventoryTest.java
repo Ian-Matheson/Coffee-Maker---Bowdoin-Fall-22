@@ -36,7 +36,7 @@ public class InventoryTest {
     /**
      * Tests adding ingredients that do and don't already exist.
      */
-    @Transactional
+//    @Transactional
     @Test
     public void testAddAndEditValidIngredientsInventory () {
         Inventory ivt = inventoryService.getInventory();
