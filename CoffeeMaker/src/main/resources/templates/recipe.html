@@ -45,19 +45,16 @@
                 $scope.ingredient = {
 					name : '',
 					amount : '',
-				};
+				}; 
 			}
 
+            // //call inventory api in this. 
+            // $http.get("/api/v1/inventory").then(function(response) {
+            //     console.log(reponse.data);
+            //     $scope.inventoryList = response.data;
+            // });
 
-            //call inventory api in this. 
-            $http.get("/api/v1/inventory").then(function(response) {
-            	for(var i=0;i<response.data.length;i++) {
-   					$scope.inventoryList.push(response.data[i].name); 
-
-				} 
-            });
-
-            $scope.inventoryList = [];
+            $scope.inventoryList = ["Coffee", "Chocolate", "Milk", "Sugar"];
 
             $scope.ingredient = {
 					name : "",
@@ -71,6 +68,7 @@
 
 			$scope.submit = function() {
 				$scope.addRecipe();
+
 				$scope.reset();
 			}
 
@@ -78,9 +76,6 @@
                 $scope.recipe.ingredients.push($scope.ingredient);
                 $scope.inventoryList.splice($scope.inventoryList.indexOf($scope.ingredient.name), 1);
                 $scope.resetIngredient();
-                
-                
-                
             }
 
 			$scope.addRecipe = function() {
@@ -150,6 +145,16 @@
                         </div>
                     </div>
                     <br>
+				</form>
+			</div>
+			<div ng-show="success">Recipe Created</div>
+			<div ng-show="failure">Error while adding recipe.</div>
+
+
+
+            <div class="formcontainer">
+				<form ng-submit="submit()" name="addIngredientForm"
+					class="form-horizontal">
                     <div class="row">
                         <div class="form-group col-md-12">
                             <label class="col-md-2 control-lable" for="file">Ingredient To Add</label>
@@ -157,7 +162,13 @@
                                 <select ng-model="ingredient.name" required="true" name="ingredientname"
                                     ng-options="item as item for item in inventoryList">
                                 <option value="" disabled> + Add New Ingredient </option>
+                                <!-- MAKE THIS WORK -->
+                                <div class="has-error" ng-show="addIngredientForm.$dirty">
+                                    <span ng-show="addIngredientForm.ingredientname==undefined
+                                    || recipe.ingredients.length==0">This is a required field.</span> 
+                                </div>
                                 </select>
+                                {{ ingredientname }}
                             </div>
                         </div>
                     </div>
@@ -168,36 +179,23 @@
                                     <input type="number" ng-model="ingredient.amount" name="ingredientamount"
                                         class="ingredientamount form-control input-sm"
                                         placeholder="Enter amount of ingredient" required="0" min="0"/>
-                                    <div class="has-error" ng-show="addRecipeForm.$dirty">
-                                        <span ng-show="addRecipeForm.ingredientamount.$error.required">This
-                                            is a required field.</span> <span
-                                            ng-show="addRecipeForm.ingredientamount.$error.min">Minimum
-                                            amount is 0.</span> <span ng-show="addRecipeForm.ingredientamount.$invalid">This
-                                            field is invalid.</span>
+                                    <div class="has-error" ng-show="addIngredientForm.$dirty">
+                                        <span ng-show="addIngredientForm.ingredientamount.$error.required 
+                                        && recipe.ingredients.length==0">This is a required field.</span> 
+                                        <span ng-show="addIngredientForm.ingredientamount.$error.min">Minimum
+                                        amount is 0.</span> 
+                                        <span ng-show="addIngredientForm.ingredientamount.$invalid && recipe.ingredients.length==0">This field is invalid.</span>
+                                        <span ng-show="addRecipeForm.$dirty && recipe.ingredients.length==0 && addIngredientForm.ingredientamount.$pristine">At least one ingredient required.</span>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <button ng-disabled="addRecipeForm.ingredientname.$invalid || addRecipeForm.ingredientamount.$invalid"
+                        <button ng-disabled="addIngredientForm.ingredientname.$invalid || addIngredientForm.ingredientamount.$invalid"
                         ng-click="addIngredient()">Add Ingredient To Recipe</button>
                     </div>
                     
                     <br>
-					<div class="row">
-						<div class="form-actions floatRight">
-							<input type="submit" value="Submit"
-								class="btn btn-primary btn-sm"
-								ng-disabled="addRecipeForm.$recipe.ingredients." />
-                            <!-- <button type="submit" ng-click="addRecipe()"
-								class="btn btn-warning btn-sm"
-								ng-disabled="addRecipeForm.$invalid">Submit
-                            </button> -->
-							<button type="button" ng-click="reset()"
-								class="btn btn-warning btn-sm"
-								ng-disabled="addRecipeForm.$pristine">Reset Form
-                            </button>
-						</div>
-					</div>
+					
                     <div class="panel-heading">Ingredients In Recipe</u></span>
                     </div>
                     <table style = "width:30%">
@@ -215,8 +213,24 @@
                     </table>
 				</form>
 			</div>
+            <div class="formcontainer">
+				<form ng-submit="submit()" name="actions" class="form-horizontal">
+                    <div class="row">
+                        <div class="form-actions floatRight">
+                            <input type="submit" value="Submit"
+                                class="btn btn-primary btn-sm"
+                                ng-disabled="addRecipeForm.$invalid || recipe.ingredients.length==0" />
+                            <button type="button" ng-click="reset()"
+                                class="btn btn-warning btn-sm"
+                                ng-disabled="addRecipeForm.$pristine && addIngredientForm.$pristine">Reset Form
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
 			<div ng-show="success">Recipe Created</div>
 			<div ng-show="failure">Error while adding recipe.</div>
+
 		</div>
 
 		<a href="/index">Home</a>
