@@ -48,7 +48,12 @@
 				};
 			}
 
-            $scope.inventoryList = ["Coffee", "Chocolate", "Milk", "Sugar"];
+            //call inventory api in this. 
+            $http.get("/api/v1/inventory").then(function(response) {
+                $scope.inventoryList = response.data;
+            });
+
+            // $scope.inventoryList = ["Coffee", "Chocolate", "Milk", "Sugar"];
 
             $scope.ingredient = {
 					name : "",
@@ -56,12 +61,8 @@
 				};
 
             $scope.removeIngredient = function(currName) {
-                // console.log(currName);
-                // console.log($scope.recipe.ingredients)
-                // console.log($scope.recipe.ingredients.indexOf(currName))
-                $scope.recipe.ingredients.splice($scope.recipe.ingredients.indexOf($scope.ingredient.name));
-                $scope.inventoryList.push(currName);
-                // console.log($scope.recipe.ingredients);
+                $scope.recipe.ingredients.splice($scope.recipe.ingredients.indexOf(currName), 1);
+                $scope.inventoryList.push(currName.name);
             }
 
 			$scope.submit = function() {
@@ -171,7 +172,6 @@
                                 </div>
                             </div>
                         </div>
-                        <br>
                         <button ng-disabled="addRecipeForm.ingredientname.$invalid || addRecipeForm.ingredientamount.$invalid"
                         ng-click="addIngredient()">Add Ingredient To Recipe</button>
                     </div>
@@ -181,7 +181,7 @@
 						<div class="form-actions floatRight">
 							<input type="submit" value="Submit"
 								class="btn btn-primary btn-sm"
-								ng-disabled="addRecipeForm.$invalid" />
+								ng-disabled="addRecipeForm.$recipe.ingredients." />
                             <!-- <button type="submit" ng-click="addRecipe()"
 								class="btn btn-warning btn-sm"
 								ng-disabled="addRecipeForm.$invalid">Submit
@@ -203,7 +203,7 @@
                             <td> {{item.name}} </td>
                             <td> {{item.amount}} </td>
                             <td> 
-                                <button type="button" ng-click="removeIngredient(item.name)">Remove</button>
+                                <button type="button" ng-click="removeIngredient(item)">Remove</button>
                             </td>
                         </tr>
                     </table>
