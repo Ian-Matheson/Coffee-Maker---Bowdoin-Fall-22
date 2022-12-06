@@ -157,7 +157,7 @@ public class Inventory extends DomainObject {
     	
     	//searching to see if ingredient already exists
     	for (int i=0; i < ingredients.size(); i++) {
-    		if (ingredients.get(i).getName() == name) {
+    		if (ingredients.get(i).getName().equals(name)) {
     			ingredients.get(i).setAmount(amount);
     			return true;
     		}
