@@ -37,8 +37,13 @@
 				};
 				if (undefined != $scope.addRecipeForm) {
 					$scope.addRecipeForm.$setPristine(); // reset Form
-                    $scope.inventoryList = ["Coffee", "Chocolate", "Milk", "Sugar"];
-				}
+					 $http.get("/api/v1/inventory").then(function(response) {
+			            	for(var i=0;i<response.data.length;i++) {
+			   					$scope.inventoryList.push(response.data[i].name); 
+
+							} 
+			         });
+				}	
 			}
 
             $scope.resetIngredient = function() {
@@ -48,14 +53,17 @@
 				}; 
 			}
 
-            // //call inventory api in this. 
-            // $http.get("/api/v1/inventory").then(function(response) {
-            //     console.log(reponse.data);
-            //     $scope.inventoryList = response.data;
-            // });
 
-            $scope.inventoryList = ["Coffee", "Chocolate", "Milk", "Sugar"];
+            $scope.inventoryList = [];
 
+          //call inventory api in this. 
+            $http.get("/api/v1/inventory").then(function(response) {
+            	for(var i=0;i<response.data.length;i++) {
+   					$scope.inventoryList.push(response.data[i].name); 
+
+				} 
+            });
+          
             $scope.ingredient = {
 					name : "",
 					amount : "",
@@ -77,6 +85,8 @@
                 $scope.inventoryList.splice($scope.inventoryList.indexOf($scope.ingredient.name), 1);
                 $scope.resetIngredient();
             }
+            
+
 
 			$scope.addRecipe = function() {
 				$scope.success = false;
