@@ -48,12 +48,16 @@
 				};
 			}
 
+
             //call inventory api in this. 
             $http.get("/api/v1/inventory").then(function(response) {
-                $scope.inventoryList = response.data;
+            	for(var i=0;i<response.data.length;i++) {
+   					$scope.inventoryList.push(response.data[i].name); 
+
+				} 
             });
 
-            // $scope.inventoryList = ["Coffee", "Chocolate", "Milk", "Sugar"];
+            $scope.inventoryList = [];
 
             $scope.ingredient = {
 					name : "",
@@ -67,7 +71,6 @@
 
 			$scope.submit = function() {
 				$scope.addRecipe();
-
 				$scope.reset();
 			}
 
@@ -75,6 +78,9 @@
                 $scope.recipe.ingredients.push($scope.ingredient);
                 $scope.inventoryList.splice($scope.inventoryList.indexOf($scope.ingredient.name), 1);
                 $scope.resetIngredient();
+                
+                
+                
             }
 
 			$scope.addRecipe = function() {
