@@ -2,20 +2,41 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <title>Add Ingredient to Inventory</title>
+<link rel="stylesheet" href="css/bootstrap.css" />
+<link rel="stylesheet" href="css/app.css" />
 <style>
 table, th, td {
   border:1px solid black;
   background-color: white;
 }
 </style>
-<script>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.js"></script>
+</head>
+
+<body>
+	<script>
 		/*<![CDATA[*/
 		var app = angular.module('myApp', []);
 		app.controller('addIngredientCtrl', function($scope, $http) {
 			
+			
+			function getInventory() {
+				$http.get("/api/v1/inventory").then(function (response) {
+	  				$scope.inventoryOriginal = response.data;
+	  			});
+			}
+			
+			
+			
 			$scope.ingredient = {
 					name : '',
 					amount : ''
+			}
+			
+			
+			$scope.addIngredienttable = function() {
+				$scope.inventoryOriginal.push($scope.ingredient)
 			}
 			
 			$scope.reset = function() {
@@ -31,51 +52,42 @@ table, th, td {
 
 			$scope.submit = function() {
 				$scope.addIngredient();
+				//$scope.addIngredienttable();
 				$scope.reset();
 			}
 			
 			$scope.addIngredient = function() {
-				$scope.success = false;
-				$scope.failure = false;
-
-				$http.post("/api/v1/ingedients", $scope.ingredient).then(
-						function(success) {
-							$scope.success = true;
-							$scope.failure = false;
+				
+				$http.post("/api/v1/ingredients", $scope.ingredient).then(
+						function(response ) {
+							$scope.submissionSuccess=true;
+							console.log(response);
+							getInventory();
 							
 						}, function(rejection) {
 							console.error("Error while adding Ingredient");
+							$scope.submissionSuccess=false;
 						});
 			}
 
+			getInventory();
 			$scope.reset();
-						
-			$scope.getInventory = function() {
-				$http.get("/api/v1/inventory").then(function(response) {
-					$scope.inventoryOriginal = response.data;
-				}, function(rejection) {
-					console.error("Error while getting Inventory");
-				})
-			}
+			
 			
 		});
 		
 		/*]]>*/
 	</script>
 
-<link rel="stylesheet" href="css/app.css" />
-<link rel="stylesheet" href="css/bootstrap.css" />
-</head>
-<body>
-
-	<div class="generic-container ng-cloak">
+	<div class="generic-container ng-cloak" ng-app="myApp"
+		ng-controller="addIngredientCtrl as ctrl">>
 		<div class="panel panel-default">
 			<div class="panel-heading">
 				<span class="lead">Add an Ingredient</span>
 			</div>
 
 			<div class="formcontainer">
-				<form ng-submit="submit()" name="addIngredientForm"
+				<form name="addIngredientForm"
 						class="form-horizontal">
 				
 					<div class="row">
@@ -107,6 +119,7 @@ table, th, td {
 									class="btn btn-warning btn-sm">Reset Form</button>
 							</div>
 					</div>
+					<div ng-if="submissionSuccess">Ingredient added successfully</div>
 						
 					</form>
 						<table style = "width:20%">
@@ -114,9 +127,9 @@ table, th, td {
 						    <th>Ingredient</th>
 						    <th>Amount</th>
 						  </tr>
-						   <tr ng-repeat="ingredient in inventoryOriginal">
-						    <td>{{ingredient.name}}</td>
-						    <td>{{ingredient.amount}}</td>
+						   <tr ng-repeat="item in inventoryOriginal">
+						    <td>{{item.name}}</td>
+						    <td>{{item.amount}}</td>
 						  </tr>
 
 						</table>

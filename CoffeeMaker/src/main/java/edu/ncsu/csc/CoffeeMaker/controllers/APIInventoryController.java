@@ -40,9 +40,10 @@ public class APIInventoryController extends APIController {
      * @return response to the request
      */
     @GetMapping ( BASE_PATH + "/inventory" )
-    public ResponseEntity getInventory () {
+    public Inventory getInventory () {
         final Inventory inventory = service.getInventory();
-        return new ResponseEntity( successResponse("Inventory was successfully retrieved"), HttpStatus.OK );
+        return inventory; 
+        //return new ResponseEntity( successResponse("Inventory was successfully retrieved"), HttpStatus.OK );
     }
 
     /**
