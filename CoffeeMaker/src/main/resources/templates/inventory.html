@@ -30,11 +30,9 @@ input.ng-dirty.ng-invalid-min {
 		/*<![CDATA[*/
 		var app = angular.module('myApp', []);
 		app.controller('inventoryCtrl', function($scope, $http) {
+			
 			$scope.inventoryOriginal = {
-				coffee : '',
-				milk : '',
-				sugar : '',
-				chocolate : ''
+				ingredients : []
 			};
 
 			$scope.getInventory = function() {

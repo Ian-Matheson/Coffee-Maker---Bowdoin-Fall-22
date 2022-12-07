@@ -129,7 +129,8 @@ public class APIIngredientTest {
 			//should not be able to add an ingredient with the same name twice
 			mvc.perform( post( "/api/v1/ingredients" ).contentType( MediaType.APPLICATION_JSON )
 	 	            .content( TestUtils.asJsonString( milk ) ) ).andExpect( status().isConflict() );
-
+				
+			
 			mvc.perform( post( "/api/v1/ingredients" ).contentType( MediaType.APPLICATION_JSON )
 	 	            .content( TestUtils.asJsonString( sugar ) ) ).andExpect( status().isOk() );
 			
