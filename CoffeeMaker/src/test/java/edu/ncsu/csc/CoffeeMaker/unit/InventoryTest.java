@@ -36,9 +36,10 @@ public class InventoryTest {
     /**
      * Tests adding ingredients that do and don't already exist.
      */
-    @Transactional
+//    @Transactional
     @Test
     public void testAddAndEditValidIngredientsInventory () {
+    	inventoryService.deleteAll();
         Inventory ivt = inventoryService.getInventory();
 
         ivt.addIngredients("Coffee", 500);
@@ -61,6 +62,8 @@ public class InventoryTest {
         ivt.addIngredients("Milk", 400);
         
         inventoryService.save( ivt );
+        
+        ivt = inventoryService.getInventory();
 
         //index might be off
         Assertions.assertEquals( 600, ivt.getIngredients().get(0).getAmount(), "Adding to the inventory should result in correctly-updated values for coffee" );

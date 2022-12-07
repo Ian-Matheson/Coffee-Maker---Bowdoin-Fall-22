@@ -65,33 +65,22 @@ public class APIInventoryTest {
 	}
 	
 	@Test
-    @Transactional
+	@Transactional
     public void updateInventory() throws Exception {
 		
 		iService.deleteAll(); 
 		
 		Inventory inventory = new Inventory(); 
-		Ingredient milk = new Ingredient("milk", 5); 
 		inventory.addIngredients("milk", 5);
 		iService.save(inventory);
 		
+		Ingredient milk = new Ingredient("milk", 5); 
+		
 		mvc.perform( put( String.format( "/api/v1/inventory") ).contentType( MediaType.APPLICATION_JSON )
-                .content( TestUtils.asJsonString( milk ) ) ).andExpect( status().isOk() );
+                .content( TestUtils.asJsonString( inventory ) ) ).andExpect( status().isOk() );
 		String inventoryString = mvc.perform( get( ( "/api/v1/inventory") ).contentType( MediaType.APPLICATION_JSON )
-                .content( TestUtils.asJsonString( milk ) ) ).andExpect( status().isOk() ).andReturn().getResponse().getContentAsString();
-		
-		
-		
-		Ingredient sauce = new Ingredient("sauce", -1); 
-		inventory.addIngredients("sauce", 0);
-		
-		mvc.perform( put( String.format("/api/v1/inventory") ).contentType( MediaType.APPLICATION_JSON )
-        .content( TestUtils.asJsonString( sauce ) ) ).andExpect( status().isConflict() );
-		inventoryString = mvc.perform( get( ( "/api/v1/inventory") ).contentType( MediaType.APPLICATION_JSON )
-        .content( TestUtils.asJsonString( milk ) ) ).andExpect( status().isOk() ).andReturn().getResponse().getContentAsString();
-
-		Assertions.assertFalse(inventoryString.contains("sauce"));
-		
+                .content( TestUtils.asJsonString( inventory ) ) ).andExpect( status().isOk() ).andReturn().getResponse().getContentAsString();
+				
 	}
 	
 	
