@@ -63,6 +63,7 @@ table, th, td {
 						}, function(rejection) {
 							console.error("Error while adding Ingredient");
 							$scope.submissionSuccess=false;
+							
 						});
 			}
 
@@ -92,7 +93,12 @@ table, th, td {
 								<div class="col-md-7">
 										<input type="text" ng-model="ingredient.name" name="name" class="name form-control input-sm"
 											placeholder="Enter Ingredient Name" required="0" />
-											
+											<div class="has-error" ng-show="addIngredientForm.$dirty">
+											<span ng-show="addIngredientForm.name.$error.required">
+											This is a required field.</span> <span ng-show="addIngredientForm.amount.$error.min">
+											This is a duplicate ingredient, create one by a different name.</span> <span ng-show="addIngredientForm.name.$invalid">This
+										field is invalid.</span>
+										</div>
 										</div>
 									</div>
 								</div>
@@ -104,6 +110,12 @@ table, th, td {
 										<input type="number" ng-model="ingredient.amount" name="amount"
 											class="price form-control input-sm"
 											placeholder="Enter Ingredient Amount" required="0" min="0" />
+										<div class="has-error" ng-show="addIngredientForm.$dirty">
+											<span ng-show="addIngredientForm.amount.$error.required">
+											This is a required field.</span> <span ng-show="addIngredientForm.amount.$error.min">
+											Minimum amount is 0.</span> <span ng-show="addIngredientForm.amount.$invalid">This
+										field is invalid.</span>
+										</div>
 									</div>
 								</div>
 							</div> 
