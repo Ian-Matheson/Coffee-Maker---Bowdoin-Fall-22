@@ -46,15 +46,7 @@ table, th, td {
 				}
 			}
 			
-			$scope.verifyunique = function() {
-				for (item in $scope.inventoryOriginal.ingredients) {
-					if (item.name === $scope.ingredient.name) {
-						return false ;
-					}	
-				}	
-				return true; 
-			}
-
+			
 			$scope.submit = function() {
 				$scope.addIngredient();
 				$scope.reset();
@@ -70,10 +62,12 @@ table, th, td {
 							getInventory();
 							
 						}, function(rejection) {
-							console.error("Error while adding Ingredient");
+							if (rejection.status == 500) {
+								alert("Duplicate ingredient detected, try agian.")
+							}
 							$scope.submissionSuccess=false;
-							
-						});
+		
+						})
 			}
 
 			getInventory();
