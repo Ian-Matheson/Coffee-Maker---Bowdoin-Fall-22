@@ -45,6 +45,15 @@ table, th, td {
 					$scope.addIngredientForm.$setPristine(); // reset Form
 				}
 			}
+			
+			$scope.verifyunique = function() {
+				for (item in $scope.inventoryOriginal.ingredients) {
+					if (item.name === $scope.ingredient.name) {
+						return false ;
+					}	
+				}	
+				return true; 
+			}
 
 			$scope.submit = function() {
 				$scope.addIngredient();
@@ -95,8 +104,9 @@ table, th, td {
 											placeholder="Enter Ingredient Name" required="0" />
 											<div class="has-error" ng-show="addIngredientForm.$dirty">
 											<span ng-show="addIngredientForm.name.$error.required">
-											This is a required field.</span> <span ng-show="addIngredientForm.amount.$error.min">
-											This is a duplicate ingredient, create one by a different name.</span> <span ng-show="addIngredientForm.name.$invalid">This
+											This is a required field.</span>
+											 <span ng-show="$scope.verifyunique">
+											This name is a duplicate.</span> <span ng-show="$scope.verifyunique">This
 										field is invalid.</span>
 										</div>
 										</div>
