@@ -2,95 +2,107 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <title>Add Ingredient to Inventory</title>
+<link rel="stylesheet" href="css/bootstrap.css" />
+<link rel="stylesheet" href="css/app.css" />
 <style>
 table, th, td {
   border:1px solid black;
   background-color: white;
 }
 </style>
-<script>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.js"></script>
+</head>
+
+<body>
+	<script>
 		/*<![CDATA[*/
 		var app = angular.module('myApp', []);
-		app.controller('inventoryCtrl', function($scope, $http) {
-			$scope.inventoryOriginal = {
-				coffee : '',
-				milk : '',
-				sugar : '',
-				chocolate : ''
-			};
-
-			$scope.getInventory = function() {
-				$http.get("/api/v1/inventory").then(function(response) {
-					$scope.inventoryOriginal = response.data;
-				}, function(rejection) {
-					console.error("Error while getting Inventory");
-				})
+		app.controller('addIngredientCtrl', function($scope, $http) {
+			
+			
+			function getInventory() {
+				$http.get("/api/v1/inventory").then(function (response) {
+	  				$scope.inventoryOriginal = response.data;
+	  			});
 			}
-
-			$scope.updateInventory = function() {
-				$scope.success = false;
-				$scope.failure = false;
-
-				$http.put("/api/v1/inventory", $scope.inventory).then(
-						function(response) {
-							$scope.getInventory();
-
-						}, function(rejection) {
-							$scope.failure = true;
-							$scope.success = false;
-							console.error("Error while updating Inventory!");
-						});
-				$scope.success = !($scope.failure);
+			
+			
+			
+			$scope.ingredient = {
+					name : '',
+					amount : ''
 			}
-
-			$scope.submit = function() {
-				$scope.updateInventory();
-				$scope.reset();
-			}
-
-			$scope.getInventory();
-
+			
+			
 			$scope.reset = function() {
-				$scope.inventory = {
-					coffee : '',
-					milk : '',
-					sugar : '',
-					chocolate : ''
+				$scope.ingredient = {
+					name : '',
+					amount : ''
 				};
-
-				if (undefined != $scope.addInventoryForm) {
-					$scope.addInventoryForm.$setPristine(); //reset Form
+				
+				if (undefined != $scope.addIngredientForm) {
+					$scope.addIngredientForm.$setPristine(); // reset Form
 				}
 			}
+			
+			
+			$scope.submit = function() {
+				$scope.addIngredient();
+				$scope.reset();
+			}
+			
+			$scope.addIngredient = function() {
+				
+				$http.post("/api/v1/ingredients", $scope.ingredient).then(
+						function(response ) {
+								$scope.submissionSuccess=true;
+								console.log(response);
+								
+							getInventory();
+							
+						}, function(rejection) {
+							if (rejection.status == 500) {
+								alert("Duplicate ingredient detected, try agian.")
+							}
+							$scope.submissionSuccess=false;
+		
+						})
+			}
 
+			getInventory();
 			$scope.reset();
-
+			
+			
 		});
+		
 		/*]]>*/
 	</script>
 
-<link rel="stylesheet" href="css/app.css" />
-<link rel="stylesheet" href="css/bootstrap.css" />
-</head>
-<body>
-
-	<div class="generic-container ng-cloak">
+	<div class="generic-container ng-cloak" ng-app="myApp"
+		ng-controller="addIngredientCtrl as ctrl">>
 		<div class="panel panel-default">
 			<div class="panel-heading">
 				<span class="lead">Add an Ingredient</span>
 			</div>
 
 			<div class="formcontainer">
-				<form ng-submit="submit()" name="addIngredientForm"
+				<form name="addIngredientForm"
 						class="form-horizontal">
 				
 					<div class="row">
 						<div class="form-group col-md-12">
 							<label class="col-md-2 control-lable"> Ingredient Name</label>
 								<div class="col-md-7">
-										<input type="text" name="name" class="name form-control input-sm"
-											placeholder="Enter recipe name" required="0" />
-											
+										<input type="text" ng-model="ingredient.name" name="name" class="name form-control input-sm"
+											placeholder="Enter Ingredient Name" required="0" />
+											<div class="has-error" ng-show="addIngredientForm.$dirty">
+											<span ng-show="addIngredientForm.name.$error.required">
+											This is a required field.</span>
+											 <span ng-show="$scope.verifyunique">
+											This name is a duplicate.</span> <span ng-show="$scope.verifyunique">This
+										field is invalid.</span>
+										</div>
 										</div>
 									</div>
 								</div>
@@ -99,43 +111,39 @@ table, th, td {
 							<div class="form-group col-md-12">
 								<label class="col-md-2 control-lable">Amount to Add</label>
 									<div class="col-md-7">
-										<input type="number" ng-model="recipe.price" name="price"
+										<input type="number" ng-model="ingredient.amount" name="amount"
 											class="price form-control input-sm"
-											placeholder="Enter recipe price" required="0" min="0" />
+											placeholder="Enter Ingredient Amount" required="0" min="0" />
+										<div class="has-error" ng-show="addIngredientForm.$dirty">
+											<span ng-show="addIngredientForm.amount.$error.required">
+											This is a required field.</span> <span ng-show="addIngredientForm.amount.$error.min">
+											Minimum amount is 0.</span> <span ng-show="addIngredientForm.amount.$invalid">This
+										field is invalid.</span>
+										</div>
 									</div>
 								</div>
 							</div> 
 				
 					<div class="row">	
 							<div class="form-actions floatRight">
-								<input type="submit" value="Submit" class="btn btn-primary btn-sm"/>
+								<input type="submit" value="Submit" class="btn btn-primary btn-sm" ng-click="submit()" />
 								<button type="button" ng-click="reset()" 
 									class="btn btn-warning btn-sm">Reset Form</button>
 							</div>
-						</div>
+					</div>
+					<div ng-if="submissionSuccess">Ingredient added successfully</div>
 						
 					</form>
 						<table style = "width:20%">
 						  <tr>
-						  	<th>ID</th>
 						    <th>Ingredient</th>
 						    <th>Amount</th>
 						  </tr>
-						   <tr>
-						  	 <td>3</td>
-						    <td>Matcha</td>
-						    <td>400</td>
+						   <tr ng-repeat="item in inventoryOriginal">
+						    <td>{{item.name}}</td>
+						    <td>{{item.amount}}</td>
 						  </tr>
-						  <tr>
-						  	 <td>2</td>
-						    <td>Coffee</td>
-						    <td>100</td>
-						  </tr>
-						  <tr>
-						  	<td>1</td>
-						    <td>Milk</td>
-						    <td>50</td>
-						  </tr>
+
 						</table>
 				</div>
 			</div>
