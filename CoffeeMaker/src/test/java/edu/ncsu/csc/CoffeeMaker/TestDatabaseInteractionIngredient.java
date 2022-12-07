@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import edu.ncsu.csc.CoffeeMaker.models.Ingredient;
 import edu.ncsu.csc.CoffeeMaker.services.IngredientService;
+import edu.ncsu.csc.CoffeeMaker.services.InventoryService;
 import edu.ncsu.csc.CoffeeMaker.services.RecipeService;
 
 
@@ -40,6 +41,8 @@ public class TestDatabaseInteractionIngredient {
 	@Autowired
 	private RecipeService recipeService;
 	
+	@Autowired 
+	private InventoryService inventoryService; 
 	/**
 	 * BeforeEach clears the current Recipe Service.
 	 * @throws Exception if fails to build
@@ -57,7 +60,10 @@ public class TestDatabaseInteractionIngredient {
 	@Test
 	@Transactional
 	public void testValidIngredients(){
-
+		recipeService.deleteAll();
+		inventoryService.deleteAll();
+		ingredientService.deleteAll(); 
+		
         Ingredient ing1 = new Ingredient("Coffee", 500);
         ingredientService.save(ing1);
 
@@ -135,6 +141,10 @@ public class TestDatabaseInteractionIngredient {
 	@Transactional
 	public void testValidDeleteIngredients(){
 
+		recipeService.deleteAll();
+		inventoryService.deleteAll();
+		ingredientService.deleteAll(); 
+		
         Ingredient ing1 = new Ingredient("Coffee", 500);
         
         ingredientService.save(ing1);

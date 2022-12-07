@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import edu.ncsu.csc.CoffeeMaker.models.Recipe;
 import edu.ncsu.csc.CoffeeMaker.services.RecipeService;
+import net.bytebuddy.asm.Advice.Return;
 
 /**
  * This is the controller that holds the REST endpoints that handle CRUD
@@ -56,11 +57,10 @@ public class APIRecipeController extends APIController {
      * @return response to the request
      */
     @GetMapping ( BASE_PATH + "/recipes/{name}" )
-    public ResponseEntity getRecipe ( @PathVariable ( "name" ) final String name ) {
+    public Recipe getRecipe ( @PathVariable ( "name" ) final String name ) {
         final Recipe recipe = service.findByName( name );
-        return null == recipe
-                ? new ResponseEntity( errorResponse( "No recipe found with name " + name ), HttpStatus.NOT_FOUND )
-                : new ResponseEntity( recipe, HttpStatus.OK );
+        return recipe;
+       
     }
 
     /**
