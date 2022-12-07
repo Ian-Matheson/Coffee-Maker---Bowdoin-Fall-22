@@ -1,5 +1,7 @@
 package edu.ncsu.csc.CoffeeMaker.services;
 
+import java.util.List;
+
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,6 +54,25 @@ public class IngredientService extends Service<Ingredient, Long> {
      */
     public Ingredient findByName ( final String name ) {
         return ingredientRepository.findByName( name );
+    }
+    
+    /**
+     * Find an ingredient with the provided name
+     * 
+     * @param name
+     *            Name of the ingredient to find
+     * @return found ingredient, null if none
+     */
+    @Override
+    public void delete ( final Ingredient ing ) {
+    	List<Ingredient> ings = super.findAll();
+    	for (int i=0; i < count(); i++ ) {
+    		if (ings.get(i).getName().equals(ing.getName())) {
+    			if (ings.get(i).getAmount().equals(ing.getAmount())) {
+    				ingredientRepository.delete(ing);
+    			}
+    		}
+    	}
     }
 
 }

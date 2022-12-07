@@ -71,7 +71,7 @@ public class APIIngredientController extends APIController {
 	            return new ResponseEntity( errorResponse( "Ingredient with the name " + ingredient.getName() + " already exists" ),
 	                    HttpStatus.CONFLICT );
 	        }
-        		service.save( ingredient );
+        		//service.save( ingredient );
         		
         		Inventory newInventory = inventoryService.getInventory();
         		newInventory.addIngredients(ingredient.getName(), ingredient.getAmount());
@@ -92,12 +92,15 @@ public class APIIngredientController extends APIController {
 	     */
 	    @DeleteMapping ( BASE_PATH + "/ingredients/{name}" )
 	    public ResponseEntity deleteIngredient ( @PathVariable final String name ) {
-	        final Ingredient ingredient = service.findByName( name );
+	        Ingredient ingredient = service.findByName( name );
 	        if ( null == ingredient ) {
 	            return new ResponseEntity( errorResponse( "No ingredient found for name " + name ), HttpStatus.NOT_FOUND );
 	        }
+	        System.out.println("CATCH ME OUTSIDE: " + ingredient);
 	        service.delete( ingredient );
 
+	        
+	        System.out.println("CATCH ME OUTSIDE: " + service.count());
 	        return new ResponseEntity( successResponse( name + " was deleted successfully" ), HttpStatus.OK );
 	    }
 	    
